@@ -1,0 +1,229 @@
+---
+description: Monet build stages — multitask / subagent source of truth (S0–S5)
+alwaysApply: true
+---
+
+# Build stages (multitask source of truth)
+
+Before starting any implementation task — especially in **multitask mode** or when spawning/assigning subagents — map work to a stage + subtask ID below.
+
+**Companions:** [docs/PRD.md](docs/PRD.md) · [docs/TRD.md](docs/TRD.md) · [docs/FUTURE.md](docs/FUTURE.md)
+
+## Required behavior
+
+1. **Map the task** to a stage ID (`S0`–`S5`, optional `P1`) and subtask ID (e.g. `S1-C`).
+2. **Respect stage gates.** Do not start stage N+1 until stage N’s gate is met (or the user explicitly overrides).
+3. **Stay in ownership.** Only edit paths listed for that subtask; stop and report if blocked by a missing contract.
+4. **Contracts first.** Finish schemas/store/orchestrator subtasks before parallel UI/impl work.
+5. **Stub AI by default.** Offline stub fixtures beat live models; no auth UI / Supabase / realtime during S0–S5.
+6. **Protect craft (S4)** over optional P1. F0+ is post-hackathon only.
+
+## How to use with subagents
+
+1. One stage at a time.
+2. Assign by ownership — no edits outside owned paths without merge handoff.
+3. Shared contracts first.
+4. Stub over live AI.
+5. Skip P1 / F0+ during hackathon unless M0–M3 already demo clean.
+
+### Agent roles
+
+| Label | Best for |
+|---|---|
+| `scaffold` | Next.js app, tooling, routes |
+| `domain` | Zod types, stores, reducers, ports |
+| `preview` | Sample page, `data-monet-id`s, demo content |
+| `selection` | Overlay, lasso tools, geometry |
+| `scout` | DOM sampling, RegionFacts |
+| `pipeline` | Orchestrator, roles, API, stubs |
+| `apply` | Patch engine, undo, before/after |
+| `ui` | Instruct panel, stage rail, chrome |
+| `craft` | Motion, brand landing, a11y polish |
+| `qa` | Smoke path, demo checklist, budgets |
+
+## Stage map
+
+```
+S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 Craft → S5 Future ports
+                     │                  │                      │
+                     └──── gate: lasso feels good ─────────────┘
+                                                              │
+                                                    optional P1 (history/export)
+                                                              │
+                                                    F0+ only after hackathon
+```
+
+| Stage | Outcome | Gate |
+|---|---|---|
+| **S0** | Runnable app + sample preview shell | Workspace loads sample page |
+| **S1** | Rect + freehand lasso | Stroke feels good live; Esc clears |
+| **S2** | Scout facts + instruct UI + turn model | Instruction submit creates a turn with facts |
+| **S3** | Stub pipeline → Proof → apply → undo | Closed loop on ≥1 demo region |
+| **S4** | Brand, motion, a11y chrome | Design-track pitch path reliable |
+| **S5** | Auth/Realtime ports + reducer | ≤2h; no auth UI |
+| **P1** | History / export / shortcuts | Only if S0–S4 already solid |
+| **F0–F5** | Cloud → collab → platform | Post-hackathon only (FUTURE.md) |
+
+---
+
+## S0 — Scaffold & demo canvas
+
+**Gate:** Open `/` and `/app` (or `/app/edit`); sample page visible at `#monet-preview-root`.
+
+| ID | Subtask | Role | Parallel? | Owns | Deliverable |
+|---|---|---|---|---|---|
+| S0-A | Bootstrap Next.js + TS + CSS Modules | `scaffold` | serial first | `package.json`, `tsconfig`, `next.config.*`, `app/layout.tsx`, `styles/` | `dev` works |
+| S0-B | Domain stubs: UUID helpers, Zod schemas | `domain` | after S0-A | `lib/schemas/`, `lib/ids.ts` | Match TRD §5.1 |
+| S0-C | Marketing route: brand-first hero + CTA | `craft` | ∥ S0-D | `app/page.tsx`, marketing styles | Brand-forward `/` |
+| S0-D | Workspace shell: chrome, mode toggle placeholder | `ui` | ∥ S0-C | `app/app/**` or `app/edit/**` | Empty workspace layout |
+| S0-E | Preview host + sample landing + `data-monet-id`s | `preview` | ∥ S0-C/D | `components/preview/`, `samples/landing/` | `hero-cta`, `primary-nav`, `signup-form` |
+| S0-F | Mode machine skeleton: Interact ↔ Select | `domain` | after S0-A | `lib/session/` | Zustand store + mode enum |
+| S0-G | Wire preview; fixed preview width | `ui` | after S0-D+E | workspace page | Preview mounted |
+
+**Merge:** S0-A → (S0-B ∥ S0-C ∥ S0-D ∥ S0-E) → S0-F → S0-G.
+
+---
+
+## S1 — Selection engine (design-critical)
+
+**Gate:** Do not leave until stroke feels good live.
+
+| ID | Subtask | Role | Parallel? | Owns | Deliverable |
+|---|---|---|---|---|---|
+| S1-A | `RegionGeometry` Zod + store actions | `domain` | serial first | `lib/schemas/region*`, store | Create/update/clear region |
+| S1-B | Overlay: pointer capture, coordinate mapping | `selection` | after S1-A | `components/lasso/Overlay.*` | Preview-root CSS px |
+| S1-C | Rect marquee tool | `selection` | ∥ S1-D after S1-B | `components/lasso/RectTool.*` | TRD S1 |
+| S1-D | Freehand + RDP simplify (~1.5px) | `selection` | ∥ S1-C after S1-B | `components/lasso/FreehandTool.*`, `lib/region/simplify*` | TRD S2–S4 |
+| S1-E | Stroke visuals: marching ants, reduced-motion dash | `craft` | after S1-B | lasso styles / SVG | 16ms budget |
+| S1-F | Keyboard: Esc clears; Enter confirms | `selection` | ∥ S1-E | overlay key handlers | PRD F2 |
+| S1-G | Tool switcher UI (Rect / Freehand) | `ui` | ∥ S1-C/D | toolbar | Wired to store |
+| S1-H | Vitest for simplify + bbox helpers | `qa` | ∥ late | `lib/region/**/*.test.*` | Math covered |
+
+**Merge:** S1-A → S1-B → (S1-C ∥ S1-D ∥ S1-G) → (S1-E ∥ S1-F) → S1-H.
+
+---
+
+## S2 — Scout + instruct UI
+
+**Gate:** Instruction submit creates `EditTurn` with geometry + facts + instruction.
+
+| ID | Subtask | Role | Parallel? | Owns | Deliverable |
+|---|---|---|---|---|---|
+| S2-A | Contracts: `RegionFacts`, `EditTurn`, `EditSession` (Zod) | `domain` | serial first | `lib/schemas/` | TRD §5.1 |
+| S2-B | Session store + `localStorage` `monet.session.v1` | `domain` | after S2-A | `lib/session/` | Versioned persist |
+| S2-C | Scout sampler: grid, colors, contrast, `data-monet-id`s | `scout` | after S2-A | `lib/region/scout*` | Deterministic `RegionFacts` |
+| S2-D | Facts panel (≥3 signals) | `ui` | after S2-C | `components/instruct/` | Colors / contrast / interactive count |
+| S2-E | Instruct input + chips (prefill only) | `ui` | ∥ S2-C/D | `components/instruct/` | Never auto-run |
+| S2-F | Mode flow: drawing → scouting → instructing | `domain` | after S2-B | mode machine | Esc / clear preserved |
+| S2-G | Stage rail chrome (static until S3) | `ui` | ∥ late | `components/pipeline/StageRail.*` | Five role labels |
+| S2-H | Unit tests: contrast math + target ranking | `qa` | ∥ S2-C | scout tests | WCAG ratio covered |
+
+**Merge:** S2-A → (S2-B ∥ S2-C) → (S2-D ∥ S2-E ∥ S2-F) → S2-G → S2-H.
+
+---
+
+## S3 — Pipeline + apply loop
+
+**Gate:** Closed-loop demo on `hero-cta` contrast path minimum.
+
+| ID | Subtask | Role | Parallel? | Owns | Deliverable |
+|---|---|---|---|---|---|
+| S3-A | Orchestrator + role handlers (one Brush revise max) | `pipeline` | serial first | `lib/pipeline/orchestrator.ts`, `roles/*` | Typed handoffs |
+| S3-B | Stub provider + fixtures (TRD §23) | `pipeline` | ∥ S3-C after S3-A | `lib/pipeline/stub/` | Offline demo path |
+| S3-C | `POST /api/pipeline` route | `pipeline` | ∥ S3-B after S3-A | `app/api/pipeline/route.ts` | Full turn stages |
+| S3-D | Pipeline client + stage rail wiring | `ui` | after S3-C | `lib/pipeline/client*` | Rail advances |
+| S3-E | Apply engine on `data-monet-id` | `apply` | ∥ S3-B/C after S3-A | `lib/apply/` | Scoped mutations |
+| S3-F | Proof gate: apply only if `proof.ok` | `apply` | after S3-E+A | apply glue | No apply on fail |
+| S3-G | Undo stack + before/after toggle | `apply` | after S3-E | store + UI | Undo last apply |
+| S3-H | Outcome summary (1–2 lines) | `ui` | after S3-D+F | instruct/result chrome | Not a critique feed |
+| S3-I | Demo pack: fixtures match sample IDs | `preview` | ∥ S3-B | `samples/`, fixture JSON | Pitch spine ready |
+| S3-J | Smoke: lasso → instruct → apply → undo | `qa` | last | `e2e/` or `docs/DEMO.md` | Offline green |
+
+**Merge:** S3-A → (S3-B ∥ S3-C ∥ S3-E ∥ S3-I) → (S3-D ∥ S3-F) → S3-G → S3-H → S3-J.
+
+---
+
+## S4 — Craft (protect this stage)
+
+**Gate:** Pitch path <20s to first apply. Prefer over P1.
+
+| ID | Subtask | Role | Parallel? | Owns | Deliverable |
+|---|---|---|---|---|---|
+| S4-A | Brand landing polish | `craft` | ∥ | marketing page/styles | PRD §11 |
+| S4-B | Signature motions (2–3): lasso, rail, apply, undo | `craft` | ∥ S4-C | motion CSS | Intentional, not noisy |
+| S4-C | `prefers-reduced-motion` pass | `craft` | ∥ S4-B | styles | TRD acceptance #7 |
+| S4-D | Keyboard a11y for primary chrome | `ui` | ∥ | workspace chrome | TRD acceptance #6 |
+| S4-E | Visual QA: contrast, focus rings, laptop viewport | `qa` | after S4-A–D | — | Desktop-primary usable |
+| S4-F | Demo script dry-run + timing | `qa` | last | `docs/DEMO.md` | 2–3 instructs + 1 undo in ~3 min |
+
+**Merge:** (S4-A ∥ S4-B ∥ S4-C ∥ S4-D) → S4-E → S4-F.
+
+---
+
+## S5 — Future ports (≤2 hours)
+
+**Gate:** Stop after interfaces + reducer. No Supabase, no auth UI.
+
+| ID | Subtask | Role | Parallel? | Owns | Deliverable |
+|---|---|---|---|---|---|
+| S5-A | `AuthPort` + no-op stub | `domain` | ∥ S5-B | `lib/future/auth.ts` | FUTURE checklist |
+| S5-B | `RealtimePort` + no-op pub/sub | `domain` | ∥ S5-A | `lib/future/realtime.ts` | Same |
+| S5-C | Edit-turn reducer `applyRoomEvent` | `domain` | after S5-A/B | `lib/session/reducer*` | LWW-ready |
+| S5-D | Optional `authorId`, `projectId` on types | `domain` | ∥ | schemas | No migration pain |
+| S5-E | Confirm `localStorage` schema version + UUID ids | `qa` | last | — | FUTURE §2 checklist |
+
+---
+
+## P1 — Optional (only after S4)
+
+| ID | Subtask | Role | Deliverable |
+|---|---|---|---|
+| P1-A | Local edit history list | `ui` | History panel |
+| P1-B | Export history Markdown/JSON | `domain` | Leave-behind for judges |
+| P1-C | Keyboard shortcuts legend | `ui` | Discoverability |
+
+Defer: multi-region batch, A/B variants, voice, live URL scraping.
+
+---
+
+## Parallelism cheat sheet
+
+| Stage | Max parallel agents | Critical path |
+|---|---|---|
+| S0 | 3–4 | App boot → sample in workspace |
+| S1 | 2–3 | Overlay coords → stroke feel |
+| S2 | 2–3 | Facts → instruct submit |
+| S3 | 3–4 | Stub fixture → apply → undo |
+| S4 | 2–3 | Motion + brand + dry-run |
+| S5 | 1–2 | Ports + reducer |
+
+## Subagent prompt template
+
+```text
+You are implementing <SUBTASK_ID> — <title> for Monet.
+Read docs/PRD.md, docs/TRD.md, and .cursor/rules/stages.mdc for context.
+Own ONLY these paths: <owns>.
+Do not expand scope into other subtasks.
+Match existing stack: Next.js App Router, TypeScript, CSS Modules, Zustand, Zod.
+Stub AI by default; no auth/multiplayer UI.
+Done when: <deliverable from table>.
+If blocked by a missing contract, stop and report the dependency.
+```
+
+## MVP acceptance checklist
+
+- [ ] Rect + freehand lassos over sample page
+- [ ] Scout shows ≥3 facts for a selection
+- [ ] Instruction runs pipeline (stub OK) with Brief + Plan + Suggestion + Proof
+- [ ] Stage rail reflects progress (or instant stub complete)
+- [ ] ≥1 apply after Proof ok + undo
+- [ ] Keyboard-usable primary chrome
+- [ ] `prefers-reduced-motion` respected
+- [ ] `AuthPort` + `RealtimePort` + turn reducer present
+- [ ] No AI secrets in client bundle
+- [ ] Demo path works offline in stub mode
+- [ ] No pin/lens/critique primary UX
+
+## Out of scope (S0–S5)
+
+Auth UI, Supabase, websockets, microservices, Figma plugin, headless browser farm, parallel specialist Craft agents (post-F2 only).

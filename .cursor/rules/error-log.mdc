@@ -1,0 +1,29 @@
+---
+description: Keep docs/errors.md updated when errors are encountered and fixed
+alwaysApply: true
+---
+
+# Error log maintenance
+
+When an error is encountered and fixed during work in this repo, append an entry to [docs/errors.md](docs/errors.md).
+
+## Requirements
+
+1. Use the next `E-NNN` id (increment from the highest existing entry; start at `E-001`).
+2. Put the new entry at the **top** of the Entries section (newest first).
+3. Fill: Date, Area, Symptoms, Cause, Fix, Future notes.
+4. Write Cause as the root cause, not a restatement of the symptom.
+5. Future notes must be actionable (what to check, avoid, or automate next time).
+6. Remove the `_No errors logged yet._` placeholder when adding the first entry.
+7. Update the **Last updated** date in the doc header.
+8. Do not invent entries for hypothetical errors; only log real failures that occurred.
+
+## When to log
+
+- Build / type / lint failures that blocked progress
+- Runtime bugs and regressions
+- Tooling / env / dependency issues
+- Integration or demo breakages
+- Wrong assumptions that wasted time once corrected
+
+Skip trivial one-keystroke typos unless they reveal a recurring trap.
