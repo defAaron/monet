@@ -1,0 +1,175 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--paper);
+  background:
+    radial-gradient(120% 80% at 12% 18%, rgba(79, 168, 148, 0.22), transparent 55%),
+    radial-gradient(90% 70% at 88% 8%, rgba(91, 124, 141, 0.28), transparent 50%),
+    linear-gradient(165deg, #0e1318 0%, #17222c 48%, #101820 100%);
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(232, 238, 242, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 238, 242, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, black 20%, transparent 75%);
+  pointer-events: none;
+}
+
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image: var(--grain);
+  pointer-events: none;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: center;
+  min-height: 100vh;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4.5rem);
+  gap: 1.25rem;
+}
+
+.brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 14vw, 8.5rem);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  background: linear-gradient(120deg, #f2f7f5 10%, #9fd0c2 55%, #7ea3b4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: brandRise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.headline {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.4vw, 2.35rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+}
+
+.support {
+  margin: 0;
+  max-width: 38ch;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--paper) 72%, var(--mist));
+  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 200ms both;
+}
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0.7rem 1.35rem;
+  border: 1px solid color-mix(in srgb, var(--verdigris-bright) 70%, white);
+  border-radius: 0.35rem;
+  background: linear-gradient(180deg, var(--verdigris-bright), var(--verdigris));
+  color: #06110e;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.ctaPrimary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0.7rem 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 45%, transparent);
+  border-radius: 0.35rem;
+  color: color-mix(in srgb, var(--paper) 88%, var(--mist));
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.ctaGhost:hover {
+  border-color: color-mix(in srgb, var(--mist) 80%, transparent);
+  background: rgba(232, 238, 242, 0.04);
+}
+
+.wash {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: min(42vh, 28rem);
+  background:
+    linear-gradient(180deg, transparent, rgba(10, 14, 18, 0.55)),
+    radial-gradient(70% 100% at 70% 100%, rgba(61, 139, 122, 0.35), transparent 70%);
+  pointer-events: none;
+  animation: washPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes brandRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes copyRise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes washPulse {
+  from {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand,
+  .headline,
+  .support,
+  .ctaRow,
+  .wash {
+    animation: none;
+  }
+}

@@ -31,4 +31,14 @@ Copy the template below. Fill every field; leave `Future notes` blank only if th
 
 ## Entries
 
-_No errors logged yet._
+### E-001 — `next dev` fails under sandbox network host lookup
+
+| Field | Value |
+|---|---|
+| **Date** | 2026-08-11 |
+| **Area** | tooling |
+| **Symptoms** | `npm run dev` crashed with `uv_interface_addresses returned Unknown system error 1` from Next’s `get-network-host` |
+| **Cause** | Sandboxed process could not read OS network interfaces while Next tried to resolve LAN hosts for the ready banner |
+| **Fix** | Run `next dev` outside the sandbox (`required_permissions: ["all"]`) and bind explicitly with `-H 127.0.0.1` |
+| **Future notes** | For local smoke checks, prefer `npm run dev -- -H 127.0.0.1`; don’t treat this as an app bug if `next build` already passes |
+

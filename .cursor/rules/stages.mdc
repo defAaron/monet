@@ -17,6 +17,7 @@ Before starting any implementation task — especially in **multitask mode** or 
 4. **Contracts first.** Finish schemas/store/orchestrator subtasks before parallel UI/impl work.
 5. **Stub AI by default.** Offline stub fixtures beat live models; no auth UI / Supabase / realtime during S0–S5.
 6. **Protect craft (S4)** over optional P1. F0+ is post-hackathon only.
+7. **Close with a completion update.** When a stage (or assigned subtask) is done, the agent’s final response must include a full update: what is complete (subtask IDs + deliverables), what remains if anything, and concrete steps the user can take to test it (routes, commands, expected UI/behavior, gate check).
 
 ## How to use with subagents
 
@@ -208,6 +209,8 @@ Match existing stack: Next.js App Router, TypeScript, CSS Modules, Zustand, Zod.
 Stub AI by default; no auth/multiplayer UI.
 Done when: <deliverable from table>.
 If blocked by a missing contract, stop and report the dependency.
+When finished, respond with a full completion update: what is done (subtask + deliverable),
+any remaining gaps, and concrete how-to-test steps (routes, commands, expected behavior, gate check).
 ```
 
 ## MVP acceptance checklist
