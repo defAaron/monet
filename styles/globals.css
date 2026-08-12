@@ -9,10 +9,14 @@
   --warning-low: #8a7a6a;
   --focus: #c4a35a;
   --danger-soft: #a66;
+  /* WCAG 2.2 target size — primary chrome controls (S4-D) */
+  --target-min: 2.75rem;
   --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
 
   --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", serif;
   --font-body: "Figtree", "Segoe UI", sans-serif;
+  /* S4-B apply morph duration (lib/apply/morph.ts) */
+  --monet-apply-morph-ms: 420ms;
 
   color-scheme: dark;
 }
@@ -51,4 +55,37 @@ textarea {
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
+}
+
+/* S4-B — apply / undo morph flash (toggled from lib/apply/morph.ts) */
+.monet-apply-morph {
+  animation: monet-apply-morph var(--monet-apply-morph-ms) ease-out;
+}
+
+@keyframes monet-apply-morph {
+  0% {
+    outline: 2px solid color-mix(in srgb, var(--verdigris-bright) 78%, transparent);
+    outline-offset: 3px;
+    filter: brightness(1.1) saturate(1.06);
+  }
+  55% {
+    outline-color: color-mix(in srgb, var(--verdigris-bright) 42%, transparent);
+    outline-offset: 2px;
+    filter: brightness(1.04) saturate(1.02);
+  }
+  100% {
+    outline: 2px solid transparent;
+    outline-offset: 0;
+    filter: none;
+  }
+}
+
+/* S4-C: instant settle — JS also no-ops flash under reduce (lib/apply/morph.ts) */
+@media (prefers-reduced-motion: reduce) {
+  .monet-apply-morph {
+    animation: none;
+    transition: none;
+    filter: none;
+    outline: none;
+  }
 }

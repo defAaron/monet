@@ -1,0 +1,57 @@
+.root {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.action,
+.phase {
+  border: 1px solid color-mix(in srgb, var(--mist) 32%, transparent);
+  border-radius: 0.3rem;
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+  padding: 0.45rem 0.5rem;
+  background: rgba(0, 0, 0, 0.22);
+  color: color-mix(in srgb, var(--paper) 72%, var(--mist));
+  cursor: pointer;
+  font-size: 0.88rem;
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    opacity 180ms ease;
+}
+
+.action:disabled,
+.phase:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.phaseActive {
+  background: color-mix(in srgb, var(--verdigris) 50%, #0d1512);
+  border-color: color-mix(in srgb, var(--verdigris-bright) 55%, transparent);
+  color: #eaf7f3;
+}
+
+.hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--paper) 45%, var(--mist));
+  transition: color 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action,
+  .phase,
+  .hint {
+    transition: none;
+  }
+}

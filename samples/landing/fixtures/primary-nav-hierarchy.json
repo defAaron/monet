@@ -1,0 +1,52 @@
+{
+  "id": "primary-nav-hierarchy",
+  "regionHints": ["primary-nav"],
+  "chips": ["hierarchy"],
+  "keywords": [
+    "hierarchy",
+    "competing",
+    "secondary",
+    "destinations",
+    "emphasis",
+    "nav",
+    "reduce competition"
+  ],
+  "brief": {
+    "restatedIntent": "Clarify nav hierarchy so destinations stop competing and one path reads primary.",
+    "constraints": [
+      "Stay within data-monet-id=\"primary-nav\"",
+      "Do not remove links"
+    ],
+    "successCriteria": [
+      "Secondary nav chrome is quieter",
+      "Spacing supports scan without equal visual weight"
+    ]
+  },
+  "plan": {
+    "summary": "Reduce secondary emphasis in the primary nav — quieter ink, more breathing room between competing items.",
+    "targetIds": ["primary-nav"],
+    "changes": [
+      {
+        "targetId": "primary-nav",
+        "description": "Soften link color and open gap so items no longer share equal weight",
+        "rationale": "Sample primary-nav ships six same-weight links plus two competing pill CTAs (Start free / Book demo)"
+      }
+    ]
+  },
+  "suggestion": {
+    "kind": "style-patch",
+    "targetHint": "primary-nav",
+    "patch": {
+      "color": "#9a948c",
+      "gap": "1.15rem",
+      "fontSize": "0.88rem",
+      "opacity": "0.92"
+    },
+    "previewLabel": "Quiet secondary nav weight"
+  },
+  "proof": {
+    "ok": true,
+    "notes": "Patch scoped to primary-nav; hierarchy change is visual weight only — safe to apply."
+  },
+  "outcomeSummary": "Nav hierarchy quieted on primary-nav so destinations compete less."
+}

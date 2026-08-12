@@ -21,7 +21,9 @@
 .chip {
   border: 1px solid color-mix(in srgb, var(--mist) 32%, transparent);
   border-radius: 0.3rem;
-  padding: 0.32rem 0.55rem;
+  /* Prefill chips sit on the instruct critical path — meet 44px target height */
+  min-height: var(--target-min);
+  padding: 0.45rem 0.7rem;
   background: rgba(0, 0, 0, 0.22);
   color: color-mix(in srgb, var(--paper) 72%, var(--mist));
   cursor: pointer;

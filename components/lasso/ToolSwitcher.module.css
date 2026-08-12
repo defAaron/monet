@@ -13,6 +13,8 @@
 .action {
   border: 1px solid color-mix(in srgb, var(--mist) 32%, transparent);
   border-radius: 0.3rem;
+  min-height: var(--target-min);
+  min-width: var(--target-min);
   padding: 0.45rem 0.5rem;
   background: rgba(0, 0, 0, 0.22);
   color: color-mix(in srgb, var(--paper) 72%, var(--mist));

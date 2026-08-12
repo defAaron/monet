@@ -4,9 +4,9 @@ import { useSessionStore, WorkspaceMode } from "@/lib/session";
 import type { RegionTool } from "@/lib/schemas";
 import styles from "./ToolSwitcher.module.css";
 
-const TOOLS: { id: RegionTool; label: string }[] = [
-  { id: "rect", label: "Rect" },
-  { id: "freehand", label: "Freehand" },
+const TOOLS: { id: RegionTool; label: string; ariaLabel: string }[] = [
+  { id: "rect", label: "Rect", ariaLabel: "Rectangle lasso" },
+  { id: "freehand", label: "Freehand", ariaLabel: "Freehand lasso" },
 ];
 
 export function ToolSwitcher() {
@@ -42,7 +42,9 @@ export function ToolSwitcher() {
             className={`${styles.tool} ${
               selectionTool === tool.id && selectEnabled ? styles.toolActive : ""
             }`}
+            aria-label={tool.ariaLabel}
             aria-pressed={selectionTool === tool.id && selectEnabled}
+            aria-keyshortcuts={tool.id === "rect" ? "R" : "F"}
             onClick={() => pickTool(tool.id)}
           >
             {tool.label}
@@ -54,6 +56,7 @@ export function ToolSwitcher() {
         type="button"
         className={styles.action}
         disabled={!selectEnabled || !region}
+        aria-label="Clear selection"
         onClick={() => clearRegion()}
       >
         Clear
@@ -65,6 +68,7 @@ export function ToolSwitcher() {
         disabled={
           !selectEnabled || !region || regionStatus === "confirmed"
         }
+        aria-label="Confirm selection"
         onClick={() => confirmRegion()}
       >
         Confirm
@@ -74,7 +78,7 @@ export function ToolSwitcher() {
         <p className={styles.hint}>Pick Rect or Freehand to start drawing.</p>
       ) : (
         <p className={styles.hint}>
-          Esc clears · Enter confirms
+          Esc clears · Enter confirms · R/F tools
         </p>
       )}
     </div>

@@ -14,6 +14,15 @@ export type {
 } from "./InstructPanel";
 
 export {
+  OutcomeSummary,
+  resolveOutcomeSummary,
+} from "./OutcomeSummary";
+export type {
+  OutcomeSummaryProps,
+  ResolvedOutcome,
+} from "./OutcomeSummary";
+
+export {
   INSTRUCT_CHIP_CATALOG,
   suggestInstructChips,
 } from "./suggestChips";

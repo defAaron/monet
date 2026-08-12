@@ -1,98 +1,309 @@
 .page {
   position: relative;
+  isolation: isolate;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   color: var(--paper);
   background:
-    radial-gradient(120% 80% at 12% 18%, rgba(79, 168, 148, 0.22), transparent 55%),
-    radial-gradient(90% 70% at 88% 8%, rgba(91, 124, 141, 0.28), transparent 50%),
-    linear-gradient(165deg, #0e1318 0%, #17222c 48%, #101820 100%);
+    radial-gradient(115% 80% at 10% 14%, rgba(79, 168, 148, 0.24), transparent 54%),
+    radial-gradient(90% 65% at 88% 8%, rgba(91, 124, 141, 0.3), transparent 50%),
+    radial-gradient(55% 45% at 78% 78%, rgba(61, 139, 122, 0.16), transparent 62%),
+    linear-gradient(168deg, #0c1116 0%, #152028 46%, #0f161d 100%);
 }
 
-.page::before {
+/* —— Full-bleed atmosphere (product metaphor as visual plane) —— */
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(232, 238, 242, 0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 238, 242, 0.038) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 82% 70% at 55% 40%, black 15%, transparent 74%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.085;
+  background-image: var(--grain);
+  mix-blend-mode: overlay;
+}
+
+.atelier {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center end;
+  padding: clamp(1rem, 4vw, 3rem);
+  animation: atelierIn 1100ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+
+.canvas {
+  position: relative;
+  width: min(58vw, 42rem);
+  max-width: 100%;
+  aspect-ratio: 16 / 11;
+  margin-right: clamp(0rem, 2vw, 2rem);
+  border: 1px solid color-mix(in srgb, var(--mist) 18%, transparent);
+  background:
+    linear-gradient(
+      155deg,
+      rgba(28, 38, 48, 0.42) 0%,
+      rgba(14, 20, 26, 0.55) 100%
+    );
+  box-shadow: 0 0 0 1px rgba(232, 238, 242, 0.02) inset;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    105deg,
+    transparent 0%,
+    black 28%,
+    black 72%,
+    transparent 100%
+  );
+  opacity: 0.9;
+  transform: perspective(1100px) rotateY(-11deg) rotateX(5deg);
+  transform-origin: 70% 45%;
+}
+
+.canvas::before {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(232, 238, 242, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232, 238, 242, 0.035) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 35%, black 20%, transparent 75%);
-  pointer-events: none;
+    linear-gradient(rgba(232, 238, 242, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 238, 242, 0.028) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.85;
 }
 
-.page::after {
+.canvasBody {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.1rem;
+  height: 100%;
+  padding: clamp(1.4rem, 3vw, 2.1rem);
+  align-content: start;
+}
+
+.mockNav {
+  width: 36%;
+  height: 0.4rem;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--mist) 22%, transparent);
+}
+
+.mockHero {
+  display: grid;
+  gap: 0.55rem;
+  width: 62%;
+  padding: 1rem 0 0.25rem;
+}
+
+.mockLine,
+.mockLineShort,
+.mockRow {
+  height: 0.45rem;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--paper) 16%, transparent);
+}
+
+.mockLine {
+  width: 78%;
+}
+
+.mockLineShort {
+  width: 52%;
+  opacity: 0.75;
+}
+
+.mockCta {
+  width: 5.25rem;
+  height: 1.35rem;
+  margin-top: 0.35rem;
+  border-radius: 0.15rem;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--verdigris) 48%, transparent),
+    color-mix(in srgb, var(--verdigris-bright) 32%, transparent)
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--verdigris-bright) 28%, transparent);
+}
+
+.mockBlock {
+  width: 48%;
+  height: 3rem;
+  margin-top: 0.35rem;
+  border-radius: 0.1rem;
+  background: rgba(232, 238, 242, 0.03);
+  border: 1px solid rgba(232, 238, 242, 0.04);
+}
+
+.mockRow {
+  width: 40%;
+  opacity: 0.55;
+}
+
+.lasso {
+  position: absolute;
+  inset: 8% 4% 6% 22%;
+  width: auto;
+  height: auto;
+  z-index: 2;
+  overflow: visible;
+}
+
+.lassoPath {
+  fill: rgba(79, 168, 148, 0.07);
+  stroke: color-mix(in srgb, var(--verdigris-bright) 50%, white);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.lassoDash {
+  fill: none;
+  stroke: color-mix(in srgb, var(--paper) 86%, var(--verdigris-bright));
+  stroke-width: 1.25;
+  stroke-dasharray: 5 4;
+  stroke-linejoin: round;
+  animation: ants 720ms linear infinite;
+}
+
+.crosshair {
+  position: absolute;
+  top: 42%;
+  left: 58%;
+  width: 0.5rem;
+  height: 0.5rem;
+  z-index: 3;
+  border: 1px solid color-mix(in srgb, var(--focus) 78%, white);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 3px rgba(196, 163, 90, 0.1),
+    0 0 20px rgba(196, 163, 90, 0.18);
+  transform: translate(-50%, -50%);
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+
+.crosshair::before,
+.crosshair::after {
   content: "";
   position: absolute;
-  inset: 0;
-  opacity: 0.07;
-  background-image: var(--grain);
-  pointer-events: none;
+  background: color-mix(in srgb, var(--focus) 50%, transparent);
 }
+
+.crosshair::before {
+  left: 50%;
+  top: -0.55rem;
+  width: 1px;
+  height: 1.6rem;
+  transform: translateX(-50%);
+}
+
+.crosshair::after {
+  top: 50%;
+  left: -0.55rem;
+  width: 1.6rem;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.wash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(12, 17, 22, 0.78) 0%, rgba(12, 17, 22, 0.35) 38%, transparent 62%),
+    linear-gradient(180deg, transparent 48%, rgba(8, 12, 16, 0.72) 100%),
+    radial-gradient(65% 55% at 72% 100%, rgba(61, 139, 122, 0.34), transparent 72%);
+  animation: washPulse 9s ease-in-out infinite alternate;
+}
+
+/* —— Hero copy (one composition over the plane) —— */
 
 .hero {
   position: relative;
   z-index: 1;
   display: grid;
   align-content: center;
+  justify-items: start;
+  gap: 1.15rem;
   min-height: 100vh;
-  max-width: 72rem;
+  min-height: 100dvh;
+  max-width: 74rem;
   margin: 0 auto;
   padding: clamp(2rem, 6vw, 4.5rem);
-  gap: 1.25rem;
 }
 
 .brand {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(4.5rem, 14vw, 8.5rem);
+  font-size: clamp(5rem, 15vw, 9.25rem);
   font-weight: 500;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  background: linear-gradient(120deg, #f2f7f5 10%, #9fd0c2 55%, #7ea3b4 100%);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  background: linear-gradient(
+    118deg,
+    #f4f8f6 8%,
+    #b6ddd2 42%,
+    #8eb4c4 78%,
+    #c9d8e0 100%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: brandRise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  filter: drop-shadow(0 18px 40px rgba(79, 168, 148, 0.12));
+  animation: brandRise 950ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .headline {
   margin: 0;
-  max-width: 22ch;
+  max-width: 18ch;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.4vw, 2.35rem);
+  font-size: clamp(1.4rem, 2.8vw, 2.05rem);
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: -0.02em;
-  color: var(--paper);
-  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+  color: color-mix(in srgb, var(--paper) 94%, var(--mist));
+  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 70ms both;
 }
 
 .support {
   margin: 0;
-  max-width: 38ch;
+  max-width: 34ch;
   font-size: 1.05rem;
-  line-height: 1.5;
-  color: color-mix(in srgb, var(--paper) 72%, var(--mist));
-  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 140ms both;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--paper) 68%, var(--mist));
+  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 130ms both;
 }
 
 .ctaRow {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.85rem;
-  margin-top: 0.75rem;
-  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 200ms both;
+  margin-top: 0.55rem;
+  animation: copyRise 900ms cubic-bezier(0.22, 1, 0.36, 1) 190ms both;
 }
 
 .ctaPrimary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.85rem;
-  padding: 0.7rem 1.35rem;
-  border: 1px solid color-mix(in srgb, var(--verdigris-bright) 70%, white);
-  border-radius: 0.35rem;
+  min-width: 11.5rem;
+  min-height: 2.75rem; /* 44px */
+  padding: 0.75rem 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--verdigris-bright) 72%, white);
+  border-radius: 0.3rem;
   background: linear-gradient(180deg, var(--verdigris-bright), var(--verdigris));
   color: #06110e;
   font-weight: 650;
@@ -102,41 +313,32 @@
 
 .ctaPrimary:hover {
   transform: translateY(-1px);
-  filter: brightness(1.05);
+  filter: brightness(1.06);
 }
 
 .ctaGhost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.85rem;
-  padding: 0.7rem 1.15rem;
-  border: 1px solid color-mix(in srgb, var(--mist) 45%, transparent);
-  border-radius: 0.35rem;
-  color: color-mix(in srgb, var(--paper) 88%, var(--mist));
+  min-height: 2.75rem;
+  padding: 0.75rem 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 42%, transparent);
+  border-radius: 0.3rem;
+  color: color-mix(in srgb, var(--paper) 86%, var(--mist));
   transition: border-color 160ms ease, background 160ms ease;
 }
 
 .ctaGhost:hover {
-  border-color: color-mix(in srgb, var(--mist) 80%, transparent);
-  background: rgba(232, 238, 242, 0.04);
+  border-color: color-mix(in srgb, var(--mist) 78%, transparent);
+  background: rgba(232, 238, 242, 0.045);
 }
 
-.wash {
-  position: absolute;
-  inset: auto 0 0 0;
-  height: min(42vh, 28rem);
-  background:
-    linear-gradient(180deg, transparent, rgba(10, 14, 18, 0.55)),
-    radial-gradient(70% 100% at 70% 100%, rgba(61, 139, 122, 0.35), transparent 70%);
-  pointer-events: none;
-  animation: washPulse 8s ease-in-out infinite alternate;
-}
+/* —— Motion —— */
 
 @keyframes brandRise {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.98);
+    transform: translateY(20px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -155,12 +357,89 @@
   }
 }
 
-@keyframes washPulse {
+@keyframes atelierIn {
   from {
-    opacity: 0.75;
+    opacity: 0;
+    transform: translateX(18px);
   }
   to {
     opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes washPulse {
+  from {
+    opacity: 0.72;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ants {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+/* —— Responsive —— */
+
+@media (max-width: 860px) {
+  .atelier {
+    place-items: end center;
+    padding-bottom: 8vh;
+  }
+
+  .canvas {
+    width: min(92vw, 28rem);
+    margin-right: 0;
+    opacity: 0.55;
+    mask-image: linear-gradient(
+      180deg,
+      transparent 0%,
+      black 35%,
+      black 70%,
+      transparent 100%
+    );
+    transform: perspective(900px) rotateY(-4deg) rotateX(3deg);
+  }
+
+  .hero {
+    align-content: start;
+    padding-top: clamp(3.5rem, 12vh, 5.5rem);
+  }
+
+  .brand {
+    font-size: clamp(4.75rem, 18vw, 7.5rem);
+  }
+
+  .support {
+    max-width: 38ch;
+  }
+}
+
+@media (max-width: 480px) {
+  .ctaPrimary,
+  .ctaGhost {
+    width: 100%;
+  }
+
+  .canvas {
+    transform: none;
+    opacity: 0.42;
   }
 }
 
@@ -169,7 +448,23 @@
   .headline,
   .support,
   .ctaRow,
-  .wash {
+  .atelier,
+  .wash,
+  .lassoDash,
+  .crosshair {
     animation: none;
+  }
+
+  .lassoDash {
+    stroke-dashoffset: 0;
+  }
+
+  .ctaPrimary,
+  .ctaGhost {
+    transition: none;
+  }
+
+  .ctaPrimary:hover {
+    transform: none;
   }
 }

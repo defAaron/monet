@@ -1,6 +1,7 @@
 "use client";
 
 import type { PipelineRole, PipelineStageStatus } from "@/lib/schemas";
+import { useSessionStore } from "@/lib/session";
 import styles from "./StageRail.module.css";
 
 /** Fixed MVP order (TRD §8 / PRD §6.4): Scout → Brief → Craft → Brush → Proof. */
@@ -22,8 +23,8 @@ export interface StageRailStage {
 
 export interface StageRailProps {
   /**
-   * Optional stage statuses for S3 wiring.
-   * Until the pipeline runs, omit this — all roles render as idle/pending.
+   * Optional stage statuses. When omitted, reads the latest EditTurn stages
+   * from the session store (S3-D live wiring).
    */
   stages?: readonly StageRailStage[];
   className?: string;
@@ -76,14 +77,22 @@ function announceText(
 }
 
 /**
- * Compact pipeline stage rail (S2-G).
- * Static chrome until S3 advances roles; labels match TRD five-role order.
+ * Compact pipeline stage rail (S2-G / S3-D).
+ * Labels match TRD five-role order; live statuses come from props or the
+ * latest session turn after instruct → /api/pipeline.
  */
 export function StageRail({
-  stages,
+  stages: stagesProp,
   className,
   hideTitle = false,
 }: StageRailProps) {
+  const storeStages = useSessionStore((s) => {
+    const turns = s.session.turns;
+    if (!turns.length) return undefined;
+    return turns[turns.length - 1]?.stages;
+  });
+  const stages = stagesProp ?? storeStages;
+
   const rootClass = className ? `${styles.root} ${className}` : styles.root;
   const live = announceText(stages);
 
@@ -97,7 +106,7 @@ export function StageRail({
           const stepClass = `${styles.step} ${STATUS_CLASS[status]}`;
 
           return (
-            <li key={role} className={stepClass} data-role={role}>
+            <li key={role} className={stepClass} data-role={role} data-status={status}>
               {index > 0 ? (
                 <span className={styles.connector} aria-hidden="true" />
               ) : null}
@@ -109,8 +118,8 @@ export function StageRail({
         })}
       </ol>
 
-      {/* TRD E-A8: compact polite announcements when statuses change (S3). */}
-      <p className={styles.live} aria-live="polite">
+      {/* TRD E-A8 / PRD §10: announce stage changes without pointer access. */}
+      <p className={styles.live} aria-live="polite" aria-atomic="true">
         {live}
       </p>
     </section>

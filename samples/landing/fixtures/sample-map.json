@@ -1,0 +1,38 @@
+{
+  "sampleId": "landing",
+  "monetIds": ["hero-cta", "primary-nav", "signup-form"],
+  "knownIssues": {
+    "hero-cta": {
+      "issue": "Low-contrast primary CTA",
+      "css": {
+        "foreground": "#a89a8c",
+        "background": "#cfc6bb",
+        "ratio": 1.62,
+        "passAA": false
+      },
+      "dom": "button[data-monet-id=\"hero-cta\"].heroCta"
+    },
+    "primary-nav": {
+      "issue": "Crowded nav with competing CTAs",
+      "notes": "Six muted links + Start free + Book demo both styled as pills",
+      "dom": "ul[data-monet-id=\"primary-nav\"]",
+      "markers": ["monet-nav-cta-primary", "monet-nav-cta-secondary"]
+    },
+    "signup-form": {
+      "issue": "Weak focus / error affordances",
+      "notes": "Inputs use outline: none; soft accent border on focus only",
+      "dom": "form[data-monet-id=\"signup-form\"]",
+      "optionalClassHook": "monet-demo-focus"
+    }
+  },
+  "optionalClassHooks": {
+    "monet-demo-hierarchy": "Toggle on primary-nav to demote Book demo and quiet links (CSS in SampleLanding.module.css)",
+    "monet-demo-focus": "Toggle on signup-form for descendant focus rings + :user-invalid borders"
+  },
+  "gatePath": {
+    "fixtureId": "hero-cta-contrast",
+    "regionHint": "hero-cta",
+    "chipId": "contrast",
+    "instruction": "Improve contrast so text and controls pass WCAG AA."
+  }
+}

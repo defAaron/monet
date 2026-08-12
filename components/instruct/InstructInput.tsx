@@ -82,6 +82,7 @@ export function InstructInput({
           type="submit"
           className={styles.submit}
           disabled={!canSubmit}
+          aria-label={`${submitLabel} — run pipeline`}
         >
           {submitLabel}
         </button>

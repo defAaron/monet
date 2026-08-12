@@ -1,0 +1,57 @@
+.root {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 22%, transparent);
+  border-radius: 0.3rem;
+  background: rgba(0, 0, 0, 0.18);
+  animation: outcomeEnter 320ms ease-out both;
+}
+
+.ok {
+  border-color: color-mix(in srgb, var(--verdigris-bright) 28%, transparent);
+  background: color-mix(in srgb, var(--verdigris) 12%, rgba(0, 0, 0, 0.2));
+}
+
+.fail {
+  border-color: color-mix(in srgb, var(--danger-soft) 32%, transparent);
+  background: color-mix(in srgb, var(--danger-soft) 10%, rgba(0, 0, 0, 0.2));
+}
+
+.title {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 50%, var(--mist));
+  font-weight: 600;
+}
+
+.body {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--paper) 78%, var(--mist));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@keyframes outcomeEnter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+  }
+}

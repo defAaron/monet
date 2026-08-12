@@ -35,6 +35,11 @@
   cursor: not-allowed;
 }
 
+.textarea:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .footer {
   display: flex;
   align-items: center;
@@ -54,6 +59,8 @@
 .submit {
   border: 1px solid color-mix(in srgb, var(--verdigris-bright) 55%, transparent);
   border-radius: 0.3rem;
+  min-height: var(--target-min);
+  min-width: var(--target-min);
   padding: 0.4rem 0.75rem;
   background: color-mix(in srgb, var(--verdigris) 50%, #0d1512);
   color: #eaf7f3;

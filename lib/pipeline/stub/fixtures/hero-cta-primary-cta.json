@@ -1,0 +1,51 @@
+{
+  "id": "hero-cta-primary-cta",
+  "regionHints": ["hero-cta"],
+  "chips": ["primary-cta"],
+  "keywords": [
+    "primary cta",
+    "primary action",
+    "clear primary",
+    "make this cta",
+    "stand out",
+    "dominant"
+  ],
+  "brief": {
+    "restatedIntent": "Make the hero CTA the clear primary action on the page.",
+    "constraints": [
+      "Scope to data-monet-id=\"hero-cta\"",
+      "Keep label text unchanged"
+    ],
+    "successCriteria": [
+      "CTA reads as solid primary (high fill contrast)",
+      "Patch references hero-cta only"
+    ]
+  },
+  "plan": {
+    "summary": "Promote hero-cta with a solid ink fill and light label so it reads as the single primary action.",
+    "targetIds": ["hero-cta"],
+    "changes": [
+      {
+        "targetId": "hero-cta",
+        "description": "Apply solid primary fill, light text, and stronger weight",
+        "rationale": "Current washed fill competes with secondary controls"
+      }
+    ]
+  },
+  "suggestion": {
+    "kind": "style-patch",
+    "targetHint": "hero-cta",
+    "patch": {
+      "backgroundColor": "#2a2f36",
+      "color": "#f7f4ef",
+      "borderColor": "#2a2f36",
+      "fontWeight": "700"
+    },
+    "previewLabel": "Solid primary CTA"
+  },
+  "proof": {
+    "ok": true,
+    "notes": "CSS patch targets data-monet-id=\"hero-cta\" only; primary emphasis looks safe to apply."
+  },
+  "outcomeSummary": "Hero CTA restyled as the clear primary action."
+}

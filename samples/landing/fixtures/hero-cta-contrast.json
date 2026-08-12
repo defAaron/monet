@@ -1,0 +1,50 @@
+{
+  "id": "hero-cta-contrast",
+  "regionHints": ["hero-cta"],
+  "chips": ["contrast"],
+  "keywords": [
+    "contrast",
+    "wcag",
+    "aa",
+    "readable",
+    "recolor",
+    "legib"
+  ],
+  "brief": {
+    "restatedIntent": "Raise hero CTA contrast so text and control meet WCAG AA.",
+    "constraints": [
+      "Scope changes to data-monet-id=\"hero-cta\"",
+      "Do not redesign the full hero"
+    ],
+    "successCriteria": [
+      "Foreground/background contrast ratio ≥ 4.5:1 (AA)",
+      "CTA remains recognizable as the primary action"
+    ]
+  },
+  "plan": {
+    "summary": "Recolor the hero CTA so Scout’s contrast fail clears AA.",
+    "targetIds": ["hero-cta"],
+    "changes": [
+      {
+        "targetId": "hero-cta",
+        "description": "Darken label to #1a1f26 and lighten fill to #e8e0d4; strengthen border",
+        "rationale": "Sample ships --sample-cta-fg #a89a8c on --sample-cta-bg #cfc6bb (~1.62:1, fail AA)"
+      }
+    ]
+  },
+  "suggestion": {
+    "kind": "style-patch",
+    "targetHint": "hero-cta",
+    "patch": {
+      "color": "#1a1f26",
+      "backgroundColor": "#e8e0d4",
+      "borderColor": "#2a2f36"
+    },
+    "previewLabel": "Raise CTA contrast (AA)"
+  },
+  "proof": {
+    "ok": true,
+    "notes": "hero-cta contrast ~1.62→12.65; style-patch scoped; WCAG AA pass."
+  },
+  "outcomeSummary": "CTA contrast 1.62→12.65 on hero-cta; AA pass."
+}

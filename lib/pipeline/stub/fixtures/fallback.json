@@ -1,0 +1,41 @@
+{
+  "id": "fallback",
+  "regionHints": [],
+  "chips": [],
+  "keywords": [],
+  "brief": {
+    "restatedIntent": "Apply a conservative, scoped improvement to the selected region.",
+    "constraints": [
+      "Prefer the top Scout targetId when present",
+      "No whole-page redesign"
+    ],
+    "successCriteria": [
+      "Suggestion references a known data-monet-id when available",
+      "Proof can accept a minimal style tweak"
+    ]
+  },
+  "plan": {
+    "summary": "Minimal scoped style nudge on the best-matching region target.",
+    "targetIds": [],
+    "changes": [
+      {
+        "targetId": "unknown",
+        "description": "Slightly strengthen text color for readability",
+        "rationale": "No demo fixture matched; keep the change tiny and reversible"
+      }
+    ]
+  },
+  "suggestion": {
+    "kind": "style-patch",
+    "targetHint": "hero-cta",
+    "patch": {
+      "color": "#2a2f36"
+    },
+    "previewLabel": "Conservative readability nudge"
+  },
+  "proof": {
+    "ok": true,
+    "notes": "Fallback stub fixture; small style-patch assumed safe for demo."
+  },
+  "outcomeSummary": "Applied a conservative stub fallback patch."
+}

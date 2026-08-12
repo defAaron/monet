@@ -49,6 +49,11 @@
   border: 1px solid color-mix(in srgb, var(--mist) 40%, transparent);
   background: rgba(0, 0, 0, 0.28);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
 }
 
 .label {
@@ -75,10 +80,11 @@
   color: color-mix(in srgb, var(--paper) 52%, var(--mist));
 }
 
-/* S3-ready visual hooks (unused while static) */
+/* Live running state while /api/pipeline is in flight (S3-D) */
 .status_running .marker {
   border-color: color-mix(in srgb, var(--verdigris-bright) 70%, transparent);
   background: color-mix(in srgb, var(--verdigris) 55%, #0d1512);
+  animation: stagePulse 1.1s ease-in-out infinite;
 }
 
 .status_running .label {
@@ -92,10 +98,17 @@
 .status_done .marker {
   border-color: color-mix(in srgb, var(--verdigris) 55%, transparent);
   background: color-mix(in srgb, var(--verdigris) 40%, #0d1512);
+  animation: stageDone 420ms ease-out;
 }
 
 .status_done .label {
   color: color-mix(in srgb, var(--paper) 78%, var(--mist));
+  transition: color 180ms ease;
+}
+
+.status_done .connector {
+  background: color-mix(in srgb, var(--verdigris) 42%, transparent);
+  transition: background 220ms ease;
 }
 
 .status_failed .marker {
@@ -129,8 +142,49 @@
   border: 0;
 }
 
+@keyframes stagePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scale(1.12);
+  }
+}
+
+/* Brief settle when a stage flips to done (S4-B). */
+@keyframes stageDone {
+  0% {
+    transform: scale(1.28);
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+      0 0 0 0 color-mix(in srgb, var(--verdigris-bright) 55%, transparent);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow:
+      inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+      0 0 0 4px color-mix(in srgb, var(--verdigris-bright) 0%, transparent);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marker {
+  .marker,
+  .status_done .label,
+  .status_done .connector {
     transition: none;
+  }
+
+  .status_running .marker,
+  .status_done .marker {
+    animation: none;
+    transform: none;
+    opacity: 1;
   }
 }

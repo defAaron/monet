@@ -6,6 +6,7 @@ Solo-builder documentation set for the design-track hackathon product.
 |---|---|
 | [PRD.md](./PRD.md) | Product requirements, MVP scope, personas, agentic pipeline roles |
 | [TRD.md](./TRD.md) | Technical architecture, stack defaults, domain model, pipeline APIs |
+| [DEMO.md](./DEMO.md) | Pitch script + smoke: &lt;20s first apply, 2–3 instructs + undo (~3 min), offline stub |
 | [FUTURE.md](./FUTURE.md) | Post-hackathon auth → cloud save → multiplayer sequence |
 | [errors.md](./errors.md) | Error log: symptoms, cause, fix, prevention notes |
 

@@ -19,6 +19,7 @@ export function ModeToggle() {
           mode === WorkspaceMode.Interact ? styles.modeButtonActive : ""
         }`}
         aria-pressed={mode === WorkspaceMode.Interact}
+        aria-label="Interact mode — preview is clickable"
         onClick={() => setMode(WorkspaceMode.Interact)}
       >
         Interact
@@ -29,6 +30,7 @@ export function ModeToggle() {
           mode === WorkspaceMode.Select ? styles.modeButtonActive : ""
         }`}
         aria-pressed={mode === WorkspaceMode.Select}
+        aria-label="Select mode — draw a region"
         onClick={() => setMode(WorkspaceMode.Select)}
       >
         Select

@@ -26,8 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${figtree.variable}`}>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${figtree.variable}`}
+      // Extensions may also touch <html>; suppress attr noise on both roots.
+      suppressHydrationWarning
+    >
       <body
+        // Browser extensions (e.g. Grammarly) inject attrs on <body> before hydrate.
+        suppressHydrationWarning
         style={
           {
             "--font-display": "var(--font-fraunces), 'Iowan Old Style', serif",

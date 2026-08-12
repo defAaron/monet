@@ -1,0 +1,52 @@
+{
+  "id": "signup-form-focus",
+  "regionHints": ["signup-form"],
+  "chips": ["focus"],
+  "keywords": [
+    "focus",
+    "a11y",
+    "accessibility",
+    "error",
+    "affordance",
+    "ring",
+    "keyboard"
+  ],
+  "brief": {
+    "restatedIntent": "Add visible focus rings and clearer error affordances on the signup form.",
+    "constraints": [
+      "Scope to data-monet-id=\"signup-form\"",
+      "Prefer visible keyboard focus over color-only cues"
+    ],
+    "successCriteria": [
+      "Focus outline is visible against the form surface",
+      "Error/required affordance contrast is clearer"
+    ]
+  },
+  "plan": {
+    "summary": "Give the signup form a visible focus ring and stronger field border so keyboard users and errors are obvious.",
+    "targetIds": ["signup-form"],
+    "changes": [
+      {
+        "targetId": "signup-form",
+        "description": "Add outline + offset and deepen border color for affordance",
+        "rationale": "Sample inputs use outline: none with only a soft border-color shift on focus"
+      }
+    ]
+  },
+  "suggestion": {
+    "kind": "style-patch",
+    "targetHint": "signup-form",
+    "patch": {
+      "outline": "2px solid #2a2f36",
+      "outlineOffset": "4px",
+      "borderColor": "#5c574f",
+      "boxShadow": "0 0 0 3px rgba(42, 47, 54, 0.18)"
+    },
+    "previewLabel": "Visible focus + error affordance"
+  },
+  "proof": {
+    "ok": true,
+    "notes": "Focus ring and border affordances visible on signup-form; scoped patch passes Proof."
+  },
+  "outcomeSummary": "Signup form gained visible focus and clearer affordances."
+}

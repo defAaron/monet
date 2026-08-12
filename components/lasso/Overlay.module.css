@@ -31,25 +31,29 @@
 }
 
 .strokeLive {
-  stroke-dasharray: 6 4;
-  animation: monet-ants 480ms linear infinite;
+  stroke: #4fa894;
+  stroke-width: 1.65;
+  stroke-dasharray: 5 4;
+  animation: monet-ants 420ms linear infinite;
+  filter: drop-shadow(0 0 1.5px rgba(79, 168, 148, 0.35));
 }
 
 .strokeDraft {
   stroke-dasharray: 6 4;
-  animation: monet-ants 560ms linear infinite;
+  animation: monet-ants 540ms linear infinite;
 }
 
 .strokeConfirmed {
   stroke-dasharray: 6 4;
-  animation: monet-ants 720ms linear infinite;
+  animation: monet-ants 700ms linear infinite;
   stroke: #4fa894;
-  fill: rgba(79, 168, 148, 0.14);
+  fill: rgba(79, 168, 148, 0.16);
+  filter: drop-shadow(0 0 2px rgba(79, 168, 148, 0.28));
 }
 
 @keyframes monet-ants {
   to {
-    stroke-dashoffset: -20;
+    stroke-dashoffset: -18;
   }
 }
 
@@ -60,5 +64,6 @@
     animation: none;
     stroke-dasharray: 5 4;
     stroke-dashoffset: 0;
+    filter: none;
   }
 }

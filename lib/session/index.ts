@@ -10,6 +10,7 @@ export {
   useSessionStore,
   type SessionUiState,
   type RegionStatus,
+  type UndoApplyResult,
 } from "./store";
 export {
   SESSION_STORAGE_KEY,

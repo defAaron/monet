@@ -2,6 +2,14 @@
 
 import { create } from "zustand";
 import { persist, type PersistStorage } from "zustand/middleware";
+import {
+  ApplyUndoStack,
+  applyComparePhase,
+  applyIfProofOk,
+  applySuggestion,
+  type ApplyResult,
+  type ComparePhase,
+} from "@/lib/apply";
 import { createId } from "@/lib/ids";
 import type {
   EditSession,
@@ -32,6 +40,14 @@ import { createPostScoutStages } from "./turns";
 
 export type RegionStatus = "draft" | "confirmed";
 
+/** In-memory apply undo (DOM is ephemeral; not part of monet.session.v1). */
+const applyUndoStack = new ApplyUndoStack();
+
+export type UndoApplyResult =
+  | { ok: true; turnId: string }
+  | { ok: false; code: "nothing-to-undo"; message: string }
+  | Extract<ApplyResult, { ok: false }>;
+
 export interface SessionUiState {
   /** Durable edit session document (TRD §5.1); persisted as monet.session.v1. */
   session: EditSession;
@@ -56,6 +72,17 @@ export interface SessionUiState {
   regionStatus: RegionStatus | null;
   /** Scout output for the confirmed region. Ephemeral until submitInstruction. */
   regionFacts: RegionFacts | null;
+
+  /**
+   * S3-G: number of applied suggestions on the in-memory undo stack.
+   * Ephemeral — not persisted (DOM resets on reload).
+   */
+  undoDepth: number;
+  /**
+   * S3-G: when true, preview shows the pre-apply look for the last apply
+   * (inverse applied; stack entry still present).
+   */
+  showingBefore: boolean;
 
   createRegion: (input: Omit<RegionGeometry, "id" | "createdAt"> & {
     id?: string;
@@ -82,6 +109,26 @@ export interface SessionUiState {
   /** Insert or replace a turn by id; keeps sessionId aligned. */
   upsertTurn: (turn: EditTurn) => boolean;
   removeTurn: (turnId: string) => boolean;
+  /**
+   * S3-F: apply Brush suggestion only when `proof.ok`, then mark `applied`.
+   * Call after pipeline fills proof/suggestion (S3-D) or whenever a turn already has proof.
+   * Pushes onto the apply undo stack when successful (S3-G).
+   */
+  applyTurnIfProofOk: (turnId: string, previewRoot: Element) => ApplyResult;
+  /**
+   * S3-G: revert last apply (DOM + mark turn `applied: false`).
+   * If already showing "before", skips a second inverse apply.
+   */
+  undoLastApply: (previewRoot: Element) => UndoApplyResult;
+  /**
+   * S3-G: show pre-apply ("before") or applied ("after") for the last undo entry.
+   */
+  setComparePhase: (
+    phase: ComparePhase,
+    previewRoot: Element,
+  ) => ApplyResult;
+  /** Convenience: flip before ↔ after for the last apply. */
+  toggleBeforeAfter: (previewRoot: Element) => ApplyResult;
 }
 
 type PersistedSessionSlice = Pick<SessionUiState, "session">;
@@ -155,6 +202,9 @@ export const useSessionStore = create<SessionUiState>()(
       region: null,
       regionStatus: null,
       regionFacts: null,
+
+      undoDepth: 0,
+      showingBefore: false,
 
       createRegion: (input) => {
         const candidate: RegionGeometry = {
@@ -259,12 +309,22 @@ export const useSessionStore = create<SessionUiState>()(
       replaceSession: (candidate) => {
         const parsed = EditSessionSchema.safeParse(candidate);
         if (!parsed.success) return false;
-        set({ session: parsed.data });
+        applyUndoStack.clear();
+        set({
+          session: parsed.data,
+          undoDepth: 0,
+          showingBefore: false,
+        });
         return true;
       },
 
       resetSession: () => {
-        set({ session: createDefaultSession() });
+        applyUndoStack.clear();
+        set({
+          session: createDefaultSession(),
+          undoDepth: 0,
+          showingBefore: false,
+        });
       },
 
       setSessionTitle: (title) => {
@@ -311,11 +371,127 @@ export const useSessionStore = create<SessionUiState>()(
         set({ session: next });
         return true;
       },
+
+      applyTurnIfProofOk: (turnId, previewRoot) => {
+        const turn = get().session.turns.find((t) => t.id === turnId);
+        if (!turn) {
+          return {
+            ok: false,
+            code: "turn-not-found",
+            message: `No turn with id ${turnId}`,
+          };
+        }
+
+        // Restore "after" before stacking another apply on a compare view.
+        if (get().showingBefore) {
+          const peek = applyUndoStack.peek();
+          if (peek) {
+            const restored = applyComparePhase(peek, previewRoot, "after");
+            if (!restored.ok) return restored;
+          }
+          set({ showingBefore: false });
+        }
+
+        const result = applyIfProofOk(turn, previewRoot);
+        if (!result.ok) return result;
+
+        const updated: EditTurn = {
+          ...turn,
+          applied: true,
+          updatedAt: new Date().toISOString(),
+        };
+        if (!get().upsertTurn(updated)) {
+          return {
+            ok: false,
+            code: "apply-failed",
+            message:
+              "Suggestion applied to DOM but turn could not be marked applied",
+          };
+        }
+
+        applyUndoStack.pushFromSuccess(result);
+        set({ undoDepth: applyUndoStack.size, showingBefore: false });
+        return result;
+      },
+
+      undoLastApply: (previewRoot) => {
+        const entry = applyUndoStack.peek();
+        if (!entry) {
+          return {
+            ok: false,
+            code: "nothing-to-undo",
+            message: "No applied suggestion to undo",
+          };
+        }
+
+        if (!get().showingBefore) {
+          const reverted = applySuggestion({
+            suggestion: entry.inverse,
+            previewRoot,
+            turnId: entry.turnId,
+          });
+          if (!reverted.ok) return reverted;
+        }
+
+        applyUndoStack.pop();
+
+        const turn = get().session.turns.find((t) => t.id === entry.turnId);
+        if (turn?.applied) {
+          const updated: EditTurn = {
+            ...turn,
+            applied: false,
+            updatedAt: new Date().toISOString(),
+          };
+          if (!get().upsertTurn(updated)) {
+            return {
+              ok: false,
+              code: "apply-failed",
+              message:
+                "DOM reverted but turn could not be marked unapplied",
+            };
+          }
+        }
+
+        set({ undoDepth: applyUndoStack.size, showingBefore: false });
+        return { ok: true, turnId: entry.turnId };
+      },
+
+      setComparePhase: (phase, previewRoot) => {
+        const entry = applyUndoStack.peek();
+        if (!entry) {
+          return {
+            ok: false,
+            code: "nothing-to-undo",
+            message: "No applied suggestion to compare",
+          };
+        }
+
+        const wantBefore = phase === "before";
+        if (wantBefore === get().showingBefore) {
+          return {
+            ok: true,
+            targetId: null,
+            suggestion: entry.suggestion,
+            inverse: entry.inverse,
+            turnId: entry.turnId,
+          };
+        }
+
+        const result = applyComparePhase(entry, previewRoot, phase);
+        if (!result.ok) return result;
+        set({ showingBefore: wantBefore });
+        return result;
+      },
+
+      toggleBeforeAfter: (previewRoot) => {
+        const next: ComparePhase = get().showingBefore ? "after" : "before";
+        return get().setComparePhase(next, previewRoot);
+      },
     }),
     {
       name: SESSION_STORAGE_KEY,
       storage: editSessionStorage,
-      // Only the EditSession document is durable; lasso drafts stay ephemeral.
+      // Only the EditSession document is durable; lasso drafts + undo stay ephemeral.
       partialize: (state) => ({ session: state.session }),
       merge: (persisted, current) => {
         const candidate = (persisted as { session?: unknown } | null)?.session;
