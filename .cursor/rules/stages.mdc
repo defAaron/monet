@@ -83,6 +83,8 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** S0-A → (S0-B ∥ S0-C ∥ S0-D ∥ S0-E) → S0-F → S0-G.
 
+**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+
 ---
 
 ## S1 — Selection engine (design-critical)
@@ -102,6 +104,8 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** S1-A → S1-B → (S1-C ∥ S1-D ∥ S1-G) → (S1-E ∥ S1-F) → S1-H.
 
+**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+
 ---
 
 ## S2 — Scout + instruct UI
@@ -120,6 +124,8 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 | S2-H | Unit tests: contrast math + target ranking | `qa` | ∥ S2-C | scout tests | WCAG ratio covered |
 
 **Merge:** S2-A → (S2-B ∥ S2-C) → (S2-D ∥ S2-E ∥ S2-F) → S2-G → S2-H.
+
+**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
 
 ---
 
@@ -142,6 +148,8 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** S3-A → (S3-B ∥ S3-C ∥ S3-E ∥ S3-I) → (S3-D ∥ S3-F) → S3-G → S3-H → S3-J.
 
+**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+
 ---
 
 ## S4 — Craft (protect this stage)
@@ -159,6 +167,8 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** (S4-A ∥ S4-B ∥ S4-C ∥ S4-D) → S4-E → S4-F.
 
+**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+
 ---
 
 ## S5 — Future ports (≤2 hours)
@@ -173,6 +183,8 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 | S5-D | Optional `authorId`, `projectId` on types | `domain` | ∥ | schemas | No migration pain |
 | S5-E | Confirm `localStorage` schema version + UUID ids | `qa` | last | — | FUTURE §2 checklist |
 
+**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+
 ---
 
 ## P1 — Optional (only after S4)
@@ -184,6 +196,8 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 | P1-C | Keyboard shortcuts legend | `ui` | Discoverability |
 
 Defer: multi-region batch, A/B variants, voice, live URL scraping.
+
+**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check).
 
 ---
 
