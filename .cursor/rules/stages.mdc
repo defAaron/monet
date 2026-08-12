@@ -17,15 +17,23 @@ Before starting any implementation task — especially in **multitask mode** or 
 4. **Contracts first.** Finish schemas/store/orchestrator subtasks before parallel UI/impl work.
 5. **Stub AI by default.** Offline stub fixtures beat live models; no auth UI / Supabase / realtime during S0–S5.
 6. **Protect craft (S4)** over optional P1. F0+ is post-hackathon only.
-7. **Close with a completion update.** When a stage (or assigned subtask) is done, the agent’s final response must include a full update: what is complete (subtask IDs + deliverables), what remains if anything, and concrete steps the user can take to test it (routes, commands, expected UI/behavior, gate check).
+7. **Distribute subtasks smartly.** Launch multiple subagents simultaneously for subtasks that do not depend on each other (marked `∥` / Parallel). Order waves so each layer rests on a solid foundation: contracts → infrastructure → tools/UI → polish/tests → stage verification. Never parallelize work that needs a missing contract or unfinished merge predecessor.
+8. **End every stage with verification.** After all stage subtasks land, always run a dedicated subagent (or wave) for security checks, performance checks, and completion checks before declaring the stage gate met. Do not advance to the next stage until that wave reports green (or the user explicitly overrides).
+9. **Close with a completion update.** When a stage (or assigned subtask) is done, the agent’s final response must include a full update: what is complete (subtask IDs + deliverables), what remains if anything, verification results (security / performance / completion), and concrete steps the user can take to test it (routes, commands, expected UI/behavior, gate check).
 
 ## How to use with subagents
 
 1. One stage at a time.
 2. Assign by ownership — no edits outside owned paths without merge handoff.
-3. Shared contracts first.
-4. Stub over live AI.
-5. Skip P1 / F0+ during hackathon unless M0–M3 already demo clean.
+3. Shared contracts first; then parallelize independent siblings in the same merge wave.
+4. Prefer max parallelism within a wave (see Parallelism cheat sheet); serialize only on real dependencies.
+5. Stub over live AI.
+6. Skip P1 / F0+ during hackathon unless M0–M3 already demo clean.
+7. **Stage-close wave (required):** after the stage’s last implementation/QA subtask, spawn a verification subagent that covers:
+   - **Security:** no secrets in client bundle; scoped apply / no unsafe DOM; stub-only AI paths; ownership boundaries respected.
+   - **Performance:** interaction budgets called out in the stage (e.g. lasso 16ms); no obvious jank on the demo path; stub pipeline stays snappy.
+   - **Completion:** stage gate met; MVP checklist items for this stage; deliverables match the stage table; how-to-test steps are runnable.
+   Fold findings into the stage completion update before advancing.
 
 ### Agent roles
 
@@ -41,6 +49,7 @@ Before starting any implementation task — especially in **multitask mode** or 
 | `ui` | Instruct panel, stage rail, chrome |
 | `craft` | Motion, brand landing, a11y polish |
 | `qa` | Smoke path, demo checklist, budgets |
+| `verify` | End-of-stage security, performance, and completion checks |
 
 ## Stage map
 
@@ -83,7 +92,7 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** S0-A → (S0-B ∥ S0-C ∥ S0-D ∥ S0-E) → S0-F → S0-G.
 
-**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+**Checkpoint:** Close with the required `verify` wave (security / performance / completion). Then respond with a full update: what is done (subtask IDs + deliverables), verify PASS/FAIL, what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
 
 ---
 
@@ -104,7 +113,7 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** S1-A → S1-B → (S1-C ∥ S1-D ∥ S1-G) → (S1-E ∥ S1-F) → S1-H.
 
-**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+**Checkpoint:** Close with the required `verify` wave (security / performance / completion). Then respond with a full update: what is done (subtask IDs + deliverables), verify PASS/FAIL, what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
 
 ---
 
@@ -125,7 +134,7 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** S2-A → (S2-B ∥ S2-C) → (S2-D ∥ S2-E ∥ S2-F) → S2-G → S2-H.
 
-**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+**Checkpoint:** Close with the required `verify` wave (security / performance / completion). Then respond with a full update: what is done (subtask IDs + deliverables), verify PASS/FAIL, what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
 
 ---
 
@@ -148,7 +157,7 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** S3-A → (S3-B ∥ S3-C ∥ S3-E ∥ S3-I) → (S3-D ∥ S3-F) → S3-G → S3-H → S3-J.
 
-**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+**Checkpoint:** Close with the required `verify` wave (security / performance / completion). Then respond with a full update: what is done (subtask IDs + deliverables), verify PASS/FAIL, what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
 
 ---
 
@@ -167,7 +176,7 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 **Merge:** (S4-A ∥ S4-B ∥ S4-C ∥ S4-D) → S4-E → S4-F.
 
-**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+**Checkpoint:** Close with the required `verify` wave (security / performance / completion). Then respond with a full update: what is done (subtask IDs + deliverables), verify PASS/FAIL, what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
 
 ---
 
@@ -183,7 +192,7 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 | S5-D | Optional `authorId`, `projectId` on types | `domain` | ∥ | schemas | No migration pain |
 | S5-E | Confirm `localStorage` schema version + UUID ids | `qa` | last | — | FUTURE §2 checklist |
 
-**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
+**Checkpoint:** Close with the required `verify` wave (security / performance / completion). Then respond with a full update: what is done (subtask IDs + deliverables), verify PASS/FAIL, what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check). Do not start the next stage until the gate is verified.
 
 ---
 
@@ -197,20 +206,22 @@ S0 Scaffold → S1 Selection → S2 Scout+Instruct → S3 Pipeline+Apply → S4 
 
 Defer: multi-region batch, A/B variants, voice, live URL scraping.
 
-**Checkpoint:** When this stage is complete, respond with a full update: what is done (subtask IDs + deliverables), what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check).
+**Checkpoint:** Close with the required `verify` wave (security / performance / completion). Then respond with a full update: what is done (subtask IDs + deliverables), verify PASS/FAIL, what remains if anything, and concrete how-to-test steps (routes, commands, expected UI/behavior, gate check).
 
 ---
 
 ## Parallelism cheat sheet
 
-| Stage | Max parallel agents | Critical path |
-|---|---|---|
-| S0 | 3–4 | App boot → sample in workspace |
-| S1 | 2–3 | Overlay coords → stroke feel |
-| S2 | 2–3 | Facts → instruct submit |
-| S3 | 3–4 | Stub fixture → apply → undo |
-| S4 | 2–3 | Motion + brand + dry-run |
-| S5 | 1–2 | Ports + reducer |
+| Stage | Max parallel agents | Critical path | Close with |
+|---|---|---|---|
+| S0 | 3–4 | App boot → sample in workspace | `verify` (sec / perf / complete) |
+| S1 | 2–3 | Overlay coords → stroke feel | `verify` (sec / perf / complete) |
+| S2 | 2–3 | Facts → instruct submit | `verify` (sec / perf / complete) |
+| S3 | 3–4 | Stub fixture → apply → undo | `verify` (sec / perf / complete) |
+| S4 | 2–3 | Motion + brand + dry-run | `verify` (sec / perf / complete) |
+| S5 | 1–2 | Ports + reducer | `verify` (sec / perf / complete) |
+
+**Dispatch rule:** Within each Merge line, spawn every `∥` sibling in one wave; wait only for listed predecessors. After the final merge node of the stage, always run `verify` before the gate/checkpoint.
 
 ## Subagent prompt template
 
@@ -225,6 +236,19 @@ Done when: <deliverable from table>.
 If blocked by a missing contract, stop and report the dependency.
 When finished, respond with a full completion update: what is done (subtask + deliverable),
 any remaining gaps, and concrete how-to-test steps (routes, commands, expected behavior, gate check).
+```
+
+### Stage-close verify prompt template
+
+```text
+You are the stage-close verify agent for Monet stage <STAGE_ID>.
+Read docs/PRD.md, docs/TRD.md, .cursor/rules/stages.mdc, and the stage’s listed deliverables/gate.
+Do not implement new features. Report and, only if trivial/safe, fix blockers that prevent the gate.
+Run three checks and return a structured report:
+1) Security — secrets out of client bundle; scoped mutations; stub AI only; no auth/realtime UI creep.
+2) Performance — stage budgets / demo-path snappiness; flag jank or heavy work on critical interactions.
+3) Completion — stage gate met; subtask deliverables present; MVP checklist items for this stage; runnable how-to-test steps.
+End with: PASS / FAIL for each check, and whether the stage may advance.
 ```
 
 ## MVP acceptance checklist
