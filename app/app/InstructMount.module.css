@@ -1,0 +1,23 @@
+.root {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.phase {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--paper) 62%, var(--mist));
+}
+
+.error {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #f0b4a8;
+}
+
+.ok {
+  margin: 0;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--verdigris-bright) 80%, var(--paper));
+}

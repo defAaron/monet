@@ -11,6 +11,7 @@
 }
 
 .root {
+  position: relative;
   min-height: 640px;
   background: #fff;
   color: #111;

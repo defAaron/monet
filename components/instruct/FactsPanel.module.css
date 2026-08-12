@@ -1,0 +1,196 @@
+.root {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 50%, var(--mist));
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--verdigris-bright) 70%, var(--mist));
+}
+
+.empty {
+  margin: 0;
+  padding: 0.65rem 0.7rem;
+  border: 1px dashed color-mix(in srgb, var(--mist) 28%, transparent);
+  border-radius: 0.3rem;
+  color: color-mix(in srgb, var(--paper) 48%, var(--mist));
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.signals {
+  margin: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.signal {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 42%, var(--mist));
+}
+
+.value {
+  margin: 0;
+  min-width: 0;
+}
+
+.muted {
+  margin: 0;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--paper) 42%, var(--mist));
+}
+
+.swatchList,
+.contrastList,
+.fontList,
+.targetList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.swatchItem,
+.contrastItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.swatch {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 0.2rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 35%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.swatchMeta,
+.contrastMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.hex,
+.targetId {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: color-mix(in srgb, var(--paper) 78%, var(--mist));
+}
+
+.ratio {
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--paper) 45%, var(--mist));
+}
+
+.pairSwatches {
+  display: inline-flex;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--mist) 35%, transparent);
+}
+
+.pairChip {
+  width: 0.85rem;
+  height: 0.95rem;
+}
+
+.contrastRatio {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--paper) 78%, var(--mist));
+}
+
+.pass,
+.fail {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.35rem;
+  border-radius: 0.2rem;
+}
+
+.pass {
+  color: #d8f3eb;
+  background: color-mix(in srgb, var(--verdigris) 45%, #0d1512);
+}
+
+.fail {
+  color: #f3e0d8;
+  background: color-mix(in srgb, var(--danger-soft) 35%, #1a1010);
+}
+
+.statLine {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--paper) 72%, var(--mist));
+}
+
+.stat strong {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--paper) 92%, var(--verdigris-bright));
+}
+
+.statSep {
+  color: color-mix(in srgb, var(--paper) 35%, var(--mist));
+}
+
+.targetList {
+  margin-top: 0.35rem;
+  gap: 0.2rem;
+}
+
+.fontList {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--paper) 72%, var(--mist));
+  gap: 0.2rem;
+}
+
+.textSample {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--paper) 68%, var(--mist));
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

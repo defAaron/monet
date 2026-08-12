@@ -1,0 +1,136 @@
+.root {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 50%, var(--mist));
+  font-weight: 600;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+  min-width: 0;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.4rem 0.15rem 0.4rem 0;
+}
+
+.connector {
+  position: absolute;
+  left: 0.42rem;
+  top: -0.35rem;
+  width: 1px;
+  height: 0.7rem;
+  background: color-mix(in srgb, var(--mist) 32%, transparent);
+}
+
+.marker {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--mist) 40%, transparent);
+  background: rgba(0, 0, 0, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.label {
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--paper) 58%, var(--mist));
+  min-width: 0;
+}
+
+.status {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 38%, var(--mist));
+}
+
+/* Idle / pending — default S2 static chrome */
+.status_pending .marker {
+  border-color: color-mix(in srgb, var(--mist) 40%, transparent);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.status_pending .label {
+  color: color-mix(in srgb, var(--paper) 52%, var(--mist));
+}
+
+/* S3-ready visual hooks (unused while static) */
+.status_running .marker {
+  border-color: color-mix(in srgb, var(--verdigris-bright) 70%, transparent);
+  background: color-mix(in srgb, var(--verdigris) 55%, #0d1512);
+}
+
+.status_running .label {
+  color: color-mix(in srgb, var(--paper) 88%, var(--verdigris-bright));
+}
+
+.status_running .status {
+  color: color-mix(in srgb, var(--verdigris-bright) 75%, var(--mist));
+}
+
+.status_done .marker {
+  border-color: color-mix(in srgb, var(--verdigris) 55%, transparent);
+  background: color-mix(in srgb, var(--verdigris) 40%, #0d1512);
+}
+
+.status_done .label {
+  color: color-mix(in srgb, var(--paper) 78%, var(--mist));
+}
+
+.status_failed .marker {
+  border-color: color-mix(in srgb, var(--danger-soft) 65%, transparent);
+  background: color-mix(in srgb, var(--danger-soft) 35%, #1a1010);
+}
+
+.status_failed .label,
+.status_failed .status {
+  color: #f0b4a8;
+}
+
+.status_skipped .marker {
+  opacity: 0.45;
+}
+
+.status_skipped .label,
+.status_skipped .status {
+  opacity: 0.55;
+}
+
+.live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marker {
+    transition: none;
+  }
+}

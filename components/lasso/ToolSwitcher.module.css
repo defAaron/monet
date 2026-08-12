@@ -1,0 +1,40 @@
+.root {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.tool,
+.action {
+  border: 1px solid color-mix(in srgb, var(--mist) 32%, transparent);
+  border-radius: 0.3rem;
+  padding: 0.45rem 0.5rem;
+  background: rgba(0, 0, 0, 0.22);
+  color: color-mix(in srgb, var(--paper) 72%, var(--mist));
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.tool:disabled,
+.action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.toolActive {
+  background: color-mix(in srgb, var(--verdigris) 50%, #0d1512);
+  border-color: color-mix(in srgb, var(--verdigris-bright) 55%, transparent);
+  color: #eaf7f3;
+}
+
+.hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--paper) 45%, var(--mist));
+}

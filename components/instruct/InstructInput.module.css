@@ -1,0 +1,71 @@
+.root {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 42%, var(--mist));
+}
+
+.textarea {
+  width: 100%;
+  min-height: 5.5rem;
+  resize: vertical;
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 32%, transparent);
+  border-radius: 0.3rem;
+  background: rgba(0, 0, 0, 0.28);
+  color: color-mix(in srgb, var(--paper) 88%, var(--mist));
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.textarea::placeholder {
+  color: color-mix(in srgb, var(--paper) 38%, var(--mist));
+}
+
+.textarea:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.meta {
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--paper) 42%, var(--mist));
+}
+
+.metaWarn {
+  color: color-mix(in srgb, var(--warning-low) 80%, var(--paper));
+}
+
+.submit {
+  border: 1px solid color-mix(in srgb, var(--verdigris-bright) 55%, transparent);
+  border-radius: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  background: color-mix(in srgb, var(--verdigris) 50%, #0d1512);
+  color: #eaf7f3;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+
+.submit:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--verdigris-bright) 45%, #0d1512);
+}
+
+.submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

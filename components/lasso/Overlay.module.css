@@ -1,0 +1,64 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  touch-action: none;
+  cursor: crosshair;
+  outline: none;
+}
+
+.overlayIdle {
+  pointer-events: none;
+  cursor: default;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.stroke {
+  fill-rule: evenodd;
+  stroke: #3d8b7a;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.strokeLive {
+  stroke-dasharray: 6 4;
+  animation: monet-ants 480ms linear infinite;
+}
+
+.strokeDraft {
+  stroke-dasharray: 6 4;
+  animation: monet-ants 560ms linear infinite;
+}
+
+.strokeConfirmed {
+  stroke-dasharray: 6 4;
+  animation: monet-ants 720ms linear infinite;
+  stroke: #4fa894;
+  fill: rgba(79, 168, 148, 0.14);
+}
+
+@keyframes monet-ants {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strokeLive,
+  .strokeDraft,
+  .strokeConfirmed {
+    animation: none;
+    stroke-dasharray: 5 4;
+    stroke-dashoffset: 0;
+  }
+}

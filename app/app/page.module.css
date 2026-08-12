@@ -106,7 +106,7 @@
 }
 
 .placeholderList {
-  margin: 0;
+  margin: 0.75rem 0 0;
   padding: 0;
   list-style: none;
   display: grid;

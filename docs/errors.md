@@ -31,6 +31,17 @@ Copy the template below. Fill every field; leave `Future notes` blank only if th
 
 ## Entries
 
+### E-002 — Rect / Freehand tool buttons ignore clicks
+
+| Field | Value |
+|---|---|
+| **Date** | 2026-08-11 |
+| **Area** | selection / toolbar |
+| **Symptoms** | Rect and Freehand buttons in the tools rail did not respond to clicks |
+| **Cause** | Buttons were `disabled` unless workspace mode was already Select; default mode is Interact, so tool picks were blocked |
+| **Fix** | Keep Rect/Freehand always clickable; choosing a tool sets `selectionTool` and enters Select mode |
+| **Future notes** | Prefer enabling primary tool controls and switching mode on pick over gating tools behind a separate mode toggle |
+
 ### E-001 — `next dev` fails under sandbox network host lookup
 
 | Field | Value |
