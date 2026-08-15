@@ -116,6 +116,11 @@ export interface SessionUiState {
    */
   applyTurnIfProofOk: (turnId: string, previewRoot: Element) => ApplyResult;
   /**
+   * Re-paint a turn that is already `applied` onto a fresh preview DOM
+   * (reload / Fast Refresh). Does not flip `applied`; seeds undo if missing.
+   */
+  restoreAppliedTurn: (turnId: string, previewRoot: Element) => ApplyResult;
+  /**
    * S3-G: revert last apply (DOM + mark turn `applied: false`).
    * If already showing "before", skips a second inverse apply.
    */
@@ -411,6 +416,34 @@ export const useSessionStore = create<SessionUiState>()(
 
         applyUndoStack.pushFromSuccess(result);
         set({ undoDepth: applyUndoStack.size, showingBefore: false });
+        return result;
+      },
+
+      restoreAppliedTurn: (turnId, previewRoot) => {
+        const turn = get().session.turns.find((t) => t.id === turnId);
+        if (!turn) {
+          return {
+            ok: false,
+            code: "turn-not-found",
+            message: `No turn with id ${turnId}`,
+          };
+        }
+        if (!turn.applied) {
+          return get().applyTurnIfProofOk(turnId, previewRoot);
+        }
+
+        // DOM is ephemeral; `applied` is durable. Re-run the gated apply
+        // without the already-applied short-circuit so the preview matches.
+        const result = applyIfProofOk({ ...turn, applied: false }, previewRoot);
+        if (!result.ok) return result;
+
+        const alreadyStacked = applyUndoStack
+          .toArray()
+          .some((entry) => entry.turnId === turnId);
+        if (!alreadyStacked) {
+          applyUndoStack.pushFromSuccess(result);
+          set({ undoDepth: applyUndoStack.size, showingBefore: false });
+        }
         return result;
       },
 

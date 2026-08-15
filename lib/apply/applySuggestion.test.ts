@@ -84,6 +84,9 @@ function createElement(opts: StubOpts = {}): HTMLElement {
     setAttribute(name: string, value: string) {
       attrs.set(name, value);
     },
+    removeAttribute(name: string) {
+      attrs.delete(name);
+    },
     contains(node: Node) {
       if ((node as unknown) === el) return true;
       return children.includes(node as HTMLElement);
@@ -221,6 +224,28 @@ describe("applySuggestion", () => {
     expect(reverted.ok).toBe(true);
     expect(nav.classList.contains("loud")).toBe(true);
     expect(nav.classList.contains("quiet")).toBe(false);
+  });
+
+  it("pins data-monet-hook for demo class-toggle classes", () => {
+    const nav = createElement({ monetId: "primary-nav" });
+    const root = createPreviewRoot([nav]);
+
+    const result = applySuggestion({
+      suggestion: {
+        kind: "class-toggle",
+        targetHint: "primary-nav",
+        patch: { add: ["monet-demo-hierarchy"] },
+        previewLabel: "Hierarchy hook",
+      },
+      previewRoot: root,
+    });
+    expect(result.ok).toBe(true);
+    expect(nav.getAttribute("data-monet-hook")).toBe("hierarchy");
+
+    if (!result.ok) return;
+    const reverted = revertSuggestion(result, root);
+    expect(reverted.ok).toBe(true);
+    expect(nav.getAttribute("data-monet-hook")).toBeNull();
   });
 
   it("applies css-var on preview root while scoping via monet id hint", () => {

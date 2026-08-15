@@ -44,6 +44,9 @@ function createElement(opts: StubOpts = {}): HTMLElement {
     setAttribute(name: string, value: string) {
       attrs.set(name, value);
     },
+    removeAttribute(name: string) {
+      attrs.delete(name);
+    },
     contains(node: Node) {
       if ((node as unknown) === el) return true;
       return children.includes(node as HTMLElement);

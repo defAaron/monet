@@ -9,7 +9,9 @@
     "destinations",
     "emphasis",
     "nav",
-    "reduce competition"
+    "reduce competition",
+    "spacing",
+    "breathe"
   ],
   "brief": {
     "restatedIntent": "Clarify nav hierarchy so destinations stop competing and one path reads primary.",
@@ -34,13 +36,10 @@
     ]
   },
   "suggestion": {
-    "kind": "style-patch",
+    "kind": "class-toggle",
     "targetHint": "primary-nav",
     "patch": {
-      "color": "#9a948c",
-      "gap": "1.15rem",
-      "fontSize": "0.88rem",
-      "opacity": "0.92"
+      "add": ["monet-demo-hierarchy"]
     },
     "previewLabel": "Quiet secondary nav weight"
   },

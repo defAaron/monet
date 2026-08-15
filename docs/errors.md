@@ -4,7 +4,7 @@
 |---|---|
 | **Audience** | Solo builder + agents |
 | **Purpose** | Record failures so they are not repeated |
-| **Last updated** | 2026-08-11 |
+| **Last updated** | 2026-08-12 |
 
 Append a new entry **whenever** an error is hit and resolved (build, runtime, tooling, integration, demo). Newest entries at the top.
 
@@ -30,6 +30,39 @@ Copy the template below. Fill every field; leave `Future notes` blank only if th
 ---
 
 ## Entries
+
+### E-009 — Pipeline 200 but preview never changed
+
+| Field | Value |
+|---|---|
+| **Date** | 2026-08-12 |
+| **Area** | apply / pipeline |
+| **Symptoms** | On `/app` (localhost:3001), Instruct ran (`POST /api/pipeline` 200), stage rail and Outcome updated, preview DOM stayed the original sample; Undo stayed disabled |
+| **Cause** | Apply lived only in a detached `ApplyAfterProofMount` effect. Persist hydration, missing `#monet-preview-root` on first tick, and React re-renders of `SampleLanding` (JSX `className`/`style`) could skip or wipe the patch. Nav/form stub patches also mutated the container in ways child CSS overrode, so even a successful apply looked like a no-op. |
+| **Fix** | Apply immediately after a Proof-ok pipeline turn in `InstructMount`; wait for persist hydration + retry preview root in `ApplyAfterProofMount`; pin style-patches with `!important` plus a scoped `<style>` tag; class-toggle demo hooks also set `data-monet-hook` so sample CSS still matches after React overwrites `className` |
+| **Future notes** | After instruct, confirm the demo target actually changed (CTA fill, nav Start-free pill, form labels) — not just Outcome text. If apply fails, the instruct panel now shows `Apply failed: …`. Hard-refresh if localStorage still has stale `applied: true` turns from before this fix. |
+
+### E-008 — Applied flag persisted, preview DOM not restored
+
+| Field | Value |
+|---|---|
+| **Date** | 2026-08-12 |
+| **Area** | apply / session |
+| **Symptoms** | Stage rail shows Scout→Proof all `done`, outcome text appears, but the sample preview is unchanged; Undo stays disabled after refresh |
+| **Cause** | Pipeline apply mutates live DOM then persists `turn.applied: true`. Fast Refresh / reload remounts `SampleLanding` (original CSS) while `ApplyAfterProofMount` skipped those turns because `applied` was already true. Undo stack is in-memory only. |
+| **Fix** | `restoreAppliedTurn` re-runs the Proof-gated suggestion onto `#monet-preview-root` for persisted applied turns and seeds the undo stack |
+| **Future notes** | After any full reload, confirm the demo target actually changed (not just the rail). Never treat `applied` as “DOM currently has the patch.” |
+
+### E-007 — `POST /api/pipeline` network error: nothing on :3000
+
+| Field | Value |
+|---|---|
+| **Date** | 2026-08-12 |
+| **Area** | tooling / pipeline |
+| **Symptoms** | Instruct UI: `Network error calling /api/pipeline`; fetch never gets a response |
+| **Cause** | The `/app` tab was talking to `localhost:3000` while that `next dev` had been Ctrl+C’d. A second `next dev` was bound to :3001 (and two node listeners shared 3001), so the origin the UI used had no server |
+| **Fix** | Stop extra Next processes, run a single `npm run dev` on :3000, confirm `POST /api/pipeline` 200 |
+| **Future notes** | If instruct shows a network error, check the tab origin vs `next dev` Local URL before debugging client/API code. Do not start a second `next dev` while one already owns `.next` (see E-006). |
 
 ### E-006 — Stale `.next` chunks after concurrent build/dev → MODULE_NOT_FOUND 500s
 

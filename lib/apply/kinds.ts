@@ -32,9 +32,55 @@ function setInlineStyle(
   if (value === "") {
     el.style.removeProperty(kebab);
   } else {
-    el.style.setProperty(kebab, value);
+    // !important so sample CSS modules cannot win on the next React render.
+    el.style.setProperty(kebab, value, "important");
   }
   return previous;
+}
+
+/**
+ * Pin a style-patch as a scoped <style> under #monet-preview-root.
+ * Inline styles alone get wiped when SampleLanding re-renders from JSX.
+ */
+function pinStylePatch(element: HTMLElement): void {
+  if (typeof document === "undefined" || typeof document.createElement !== "function") {
+    return;
+  }
+  const closest = element.closest;
+  if (typeof closest !== "function") return;
+
+  const root = closest.call(element, "#monet-preview-root");
+  if (!root) return;
+
+  const monetId = element.getAttribute("data-monet-id")?.trim();
+  if (!monetId) return;
+
+  const styleId = `monet-apply-${monetId}`;
+  const decls: string[] = [];
+  const inline = element.style;
+  if (inline && typeof inline.length === "number") {
+    for (let i = 0; i < inline.length; i += 1) {
+      const name = inline.item(i);
+      if (!name) continue;
+      const value = inline.getPropertyValue(name);
+      if (!value) continue;
+      decls.push(`${name}: ${value} !important`);
+    }
+  }
+
+  const existing = root.querySelector(`#${styleId}`);
+  if (decls.length === 0) {
+    existing?.remove();
+    return;
+  }
+
+  let tag = existing;
+  if (!tag) {
+    tag = document.createElement("style");
+    tag.id = styleId;
+    root.appendChild(tag);
+  }
+  tag.textContent = `[data-monet-id="${monetId}"] { ${decls.join("; ")}; }`;
 }
 
 /** `style-patch` — camelCase or kebab CSS props on the target element. */
@@ -56,6 +102,8 @@ export function applyStylePatch(
     const value = coercePatchString(raw, `style.${key}`);
     inversePatch[key] = setInlineStyle(el, key, value);
   }
+
+  pinStylePatch(el);
 
   return { inversePatch };
 }
@@ -140,10 +188,31 @@ export function applyClassToggle(
     }
   }
 
+  syncDemoHookAttribute(el);
+
   const inversePatch: Record<string, unknown> = {};
   if (inverseAdd.length) inversePatch.add = inverseAdd;
   if (inverseRemove.length) inversePatch.remove = inverseRemove;
   return { inversePatch };
+}
+
+/** Maps demo class hooks to a data attribute React will not overwrite on re-render. */
+const DEMO_HOOK_ATTR = "data-monet-hook";
+const DEMO_HOOK_BY_CLASS: Record<string, string> = {
+  "monet-demo-hierarchy": "hierarchy",
+  "monet-demo-focus": "focus",
+};
+
+function syncDemoHookAttribute(el: HTMLElement): void {
+  const hooks: string[] = [];
+  for (const [className, hook] of Object.entries(DEMO_HOOK_BY_CLASS)) {
+    if (el.classList.contains(className)) hooks.push(hook);
+  }
+  if (hooks.length === 0) {
+    el.removeAttribute?.(DEMO_HOOK_ATTR);
+    return;
+  }
+  el.setAttribute?.(DEMO_HOOK_ATTR, hooks.join(" "));
 }
 
 function normalizeCssVarName(key: string): string {

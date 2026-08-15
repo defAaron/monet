@@ -6,6 +6,7 @@ import {
   OutcomeSummary,
   resolveOutcomeSummary,
 } from "@/components/instruct";
+import { queryPreviewRoot, type ApplyResult } from "@/lib/apply";
 import {
   PipelineClientError,
   runPipelineForTurn,
@@ -27,6 +28,7 @@ export function InstructMount() {
   const regionStatus = useSessionStore((s) => s.regionStatus);
   const submitInstruction = useSessionStore((s) => s.submitInstruction);
   const upsertTurn = useSessionStore((s) => s.upsertTurn);
+  const applyTurnIfProofOk = useSessionStore((s) => s.applyTurnIfProofOk);
   // Select a stable turn reference; resolve outside the snapshot (React 19
   // requires getSnapshot to return cached referential equality).
   const lastTurn = useSessionStore((s) => {
@@ -114,6 +116,14 @@ export function InstructMount() {
                 setError("Pipeline finished but the turn could not be saved.");
                 return;
               }
+
+              const applied = await applyProofToPreview(
+                completed.id,
+                applyTurnIfProofOk,
+              );
+              if (applied && !applied.ok && applied.code !== "already-applied") {
+                setError(`Apply failed: ${applied.message}`);
+              }
             } catch (err) {
               if (isAbortError(err)) return;
 
@@ -169,4 +179,42 @@ function isAbortError(err: unknown): boolean {
     (err instanceof DOMException && err.name === "AbortError") ||
     (err instanceof Error && err.name === "AbortError")
   );
+}
+
+/**
+ * Proof-gated apply on the live preview. Retries a few frames so
+ * `#monet-preview-root` can land after persist / Fast Refresh.
+ */
+async function applyProofToPreview(
+  turnId: string,
+  applyTurnIfProofOk: (id: string, root: Element) => ApplyResult,
+): Promise<ApplyResult | null> {
+  const turn = useSessionStore
+    .getState()
+    .session.turns.find((t) => t.id === turnId);
+  if (!turn?.proof?.ok || !turn.suggestion) return null;
+
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    const previewRoot = queryPreviewRoot();
+    if (previewRoot) {
+      return applyTurnIfProofOk(turnId, previewRoot);
+    }
+    await waitFrame();
+  }
+
+  return {
+    ok: false,
+    code: "missing-preview-root",
+    message: "Preview root #monet-preview-root was not found",
+  };
+}
+
+function waitFrame(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(() => resolve());
+      return;
+    }
+    setTimeout(resolve, 16);
+  });
 }

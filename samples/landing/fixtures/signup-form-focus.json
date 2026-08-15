@@ -34,13 +34,10 @@
     ]
   },
   "suggestion": {
-    "kind": "style-patch",
+    "kind": "class-toggle",
     "targetHint": "signup-form",
     "patch": {
-      "outline": "2px solid #2a2f36",
-      "outlineOffset": "4px",
-      "borderColor": "#5c574f",
-      "boxShadow": "0 0 0 3px rgba(42, 47, 54, 0.18)"
+      "add": ["monet-demo-focus"]
     },
     "previewLabel": "Visible focus + error affordance"
   },

@@ -29,7 +29,11 @@
     "kind": "style-patch",
     "targetHint": "hero-cta",
     "patch": {
-      "color": "#2a2f36"
+      "color": "#1a1f26",
+      "backgroundColor": "#f4eee4",
+      "borderColor": "#2a2f36",
+      "outline": "3px solid #2a2f36",
+      "outlineOffset": "4px"
     },
     "previewLabel": "Conservative readability nudge"
   },

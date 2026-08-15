@@ -72,7 +72,7 @@ describe("S3-B stub fixtures + provider", () => {
 
     for (const fixture of STUB_DEMO_FIXTURES) {
       expect(fixture.proof.ok).toBe(true);
-      expect(fixture.suggestion.kind).toBe("style-patch");
+      expect(["style-patch", "class-toggle"]).toContain(fixture.suggestion.kind);
       expect(fixture.regionHints.length).toBeGreaterThan(0);
       expect(fixture.suggestion.targetHint).toBe(fixture.regionHints[0]);
     }
@@ -117,6 +117,7 @@ describe("S3-B stub fixtures + provider", () => {
 
     expect(res.model).toBe("stub-pipeline");
     expect(res.turn.suggestion?.targetHint).toBe("primary-nav");
+    expect(res.turn.suggestion?.kind).toBe("class-toggle");
     expect(res.turn.proof?.ok).toBe(true);
     expect(res.turn.outcomeSummary).toMatch(/nav/i);
   });

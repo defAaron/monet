@@ -72,9 +72,12 @@ export async function runPipeline(
     });
   } catch (err) {
     if (isAbortError(err)) throw err;
-    throw new PipelineClientError("Network error calling /api/pipeline", {
-      cause: err,
-    });
+    throw new PipelineClientError(
+      "Network error calling /api/pipeline — is the Next.js dev server running on this origin?",
+      {
+        cause: err,
+      },
+    );
   }
 
   let body: unknown;

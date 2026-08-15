@@ -41,7 +41,7 @@ describe("landing demo fixtures (S3-I)", () => {
       SuggestionPayloadSchema.parse(fixture.suggestion);
       ProofResultSchema.parse(fixture.proof);
       expect(fixture.proof.ok).toBe(true);
-      expect(fixture.suggestion.kind).toBe("style-patch");
+      expect(["style-patch", "class-toggle"]).toContain(fixture.suggestion.kind);
     }
   });
 

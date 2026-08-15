@@ -181,45 +181,54 @@
  * See samples/landing/fixtures/README.md
  */
 
-.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy) {
+.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy),
+.root :global([data-monet-id="primary-nav"][data-monet-hook~="hierarchy"]) {
   gap: 0.45rem 1.1rem;
 }
 
 .root :global([data-monet-id="primary-nav"].monet-demo-hierarchy a),
-.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy button:not(.monet-nav-cta)) {
+.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy button:not(.monet-nav-cta)),
+.root :global([data-monet-id="primary-nav"][data-monet-hook~="hierarchy"] a),
+.root :global([data-monet-id="primary-nav"][data-monet-hook~="hierarchy"] button:not(.monet-nav-cta)) {
   color: #a39e96;
   font-size: 0.86rem;
 }
 
-.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy .monet-nav-cta-primary) {
+.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy .monet-nav-cta-primary),
+.root :global([data-monet-id="primary-nav"][data-monet-hook~="hierarchy"] .monet-nav-cta-primary) {
   background: #2a2f36 !important;
   color: #f7f4ef !important;
   font-weight: 600;
 }
 
-.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy .monet-nav-cta-secondary) {
+.root :global([data-monet-id="primary-nav"].monet-demo-hierarchy .monet-nav-cta-secondary),
+.root :global([data-monet-id="primary-nav"][data-monet-hook~="hierarchy"] .monet-nav-cta-secondary) {
   background: transparent !important;
   color: #8b8680 !important;
   font-weight: 500;
   border: 1px solid #d7cfc3;
 }
 
-.root :global([data-monet-id="signup-form"].monet-demo-focus) label {
+.root :global([data-monet-id="signup-form"].monet-demo-focus) label,
+.root :global([data-monet-id="signup-form"][data-monet-hook~="focus"] label) {
   color: #2a2f36;
   font-weight: 600;
 }
 
-.root :global([data-monet-id="signup-form"].monet-demo-focus) input:focus {
+.root :global([data-monet-id="signup-form"].monet-demo-focus) input:focus,
+.root :global([data-monet-id="signup-form"][data-monet-hook~="focus"] input:focus) {
   outline: 2px solid #2a2f36;
   outline-offset: 2px;
   border-color: #2a2f36;
 }
 
-.root :global([data-monet-id="signup-form"].monet-demo-focus) input:user-invalid {
+.root :global([data-monet-id="signup-form"].monet-demo-focus) input:user-invalid,
+.root :global([data-monet-id="signup-form"][data-monet-hook~="focus"] input:user-invalid) {
   border-color: #8a3b2c;
 }
 
-.root :global([data-monet-id="signup-form"].monet-demo-focus) input:user-invalid:focus {
+.root :global([data-monet-id="signup-form"].monet-demo-focus) input:user-invalid:focus,
+.root :global([data-monet-id="signup-form"][data-monet-hook~="focus"] input:user-invalid:focus) {
   outline-color: #8a3b2c;
   border-color: #8a3b2c;
 }
